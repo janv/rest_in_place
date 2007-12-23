@@ -104,8 +104,7 @@ Your app/views/users/show.html.erb:
 
     <html>
     <head>
-        <script type="text/javascript" src="/javascripts/jquery-1.2.1.js" charset="utf-8"></script>
-        <script type="text/javascript" src="/javascripts/rest_in_place.js" charset="utf-8"></script>
+        <%= javascript_include_tag "jquery-1.2.1.js" , "rest_in_place" %>
     </head>
     <body>
         <div id="<%= dom_id @user %>">
