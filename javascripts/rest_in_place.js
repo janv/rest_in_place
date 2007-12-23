@@ -29,7 +29,7 @@ jQuery.fn.rest_in_place = function(url, objectName, attributeName) {
 }
 
 jQuery(function(){
-	$(".rest_in_place").each(function(){
+	jQuery(".rest_in_place").each(function(){
 		var e = jQuery(this);
 		var url; var obj; var attrib;
 		e.parents().each(function(){

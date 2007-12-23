@@ -28,6 +28,10 @@ Instructions
 
 REST in Place needs the [jQuery][jQuery] library to work.
 
+Install REST in Place with
+
+    script/plugin install http://svn.varwig.org/rails/plugins/rest_in_place/
+
 To make a piece of Text inplace-editable, wrap it into an element (a span
 usually) with class "rest_in_place". The editor needs 3 pieces of information
 to work: a URL, an object name and the attribute name. These are provided as
@@ -124,6 +128,13 @@ Prototype so people can chose which framework they want to use.
 [jRails]: http://ennerchi.com/projects/jrails
 
 Also, REST in Place at this stage is primarily a proof of concept.
+
+Non-Rails
+=========
+
+REST in Place was written for Ruby on Rails but is usable with any kind of
+RESTful web api. Just include the rest_in_place.js in your webpage and follow
+the instructions.
 
 Participation
 =============
