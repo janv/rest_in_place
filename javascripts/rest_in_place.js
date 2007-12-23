@@ -1,51 +1,51 @@
-jQuery.fn.rest_in_place = function(url, objectName, attributeName) {
-	var e = this;
-	function clickFunction() {
-		var oldValue = e.html();
-		e.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + oldValue + '"></form>');
-		e.unbind('click');
-		e.find("form").submit(function(){
-			var value = e.find("input").val();
-			e.html("saving...");
-			jQuery.ajax({
-				"url" : url,
-				"type" : "put",
-				"data" : "_method=put&"+objectName+'['+attributeName+']='+value,
-				"success" : function(){
-					jQuery.ajax({
-						"url" : url,
-						"beforeSend"  : function(xhr){ xhr.setRequestHeader("Accept", "application/xml"); },
-						"success" : function(xmldata, status){
-							e.html(jQuery(xmldata).find(objectName+' '+attributeName).text());
-							e.click(clickFunction);
+rest_in_place = function(element, url, objectName, attributeName){
+	var e = element;
+	
+	function clickFunction(){
+		var oldValue = e.innerHTML;
+		function submitFunction(){
+			var value = Form.Element.getValue(e.select('input')[0]);
+			e.innerHTML = "saving...";
+			new Ajax.Request(url,{
+				method: 'put',
+				parameters: objectName+'['+attributeName+']='+value,
+				onSuccess: function(transport){
+					new Ajax.Request(url, {
+						method: 'get',
+						requestHeaders: { "Accept" : "application/xml"},
+						onSuccess : function(xhr){
+							e.innerHTML = Element.select(xhr.responseXML, objectName+' '+attributeName)[0].textContent;
+							Event.observe(e,'click', clickFunction);
 						}
 					});
 				}
 			});
 			return false;
-		})
+		}
+		e.innerHTML = '<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + oldValue + '"></form>';
+		Event.stopObserving(e, 'click', clickFunction);
+		Event.observe(e.select('form')[0], 'submit', submitFunction)
 	}
-	this.click(clickFunction);
+	
+	Event.observe(e,'click', clickFunction)
 }
 
-jQuery(function(){
-	jQuery(".rest_in_place").each(function(){
-		var e = jQuery(this);
+Event.observe(window, 'load',function() {
+	$$(".rest_in_place").each(function(e){
 		var url; var obj; var attrib;
-		e.parents().each(function(){
-			url    = url    || jQuery(this).attr("url");
-			obj    = obj    || jQuery(this).attr("object");
-			attrib = attrib || jQuery(this).attr("attribute");
+		Element.ancestors(e).each(function(a){
+			url    = url    || Element.readAttribute(a, 'url');
+			obj    = obj    || Element.readAttribute(a, 'object');
+			attrib = attrib || Element.readAttribute(a, 'attribute');
 		});
-		e.parents().each(function(){
-			if (res = this.id.match(/^(\w+)_(\d+)$/i)) {
+		Element.ancestors(e).each(function(a){
+			if (res = a.id.match(/^(\w+)_(\d+)$/i)) {
 				obj = obj || res[1];
 			}
 		});
-		url    = e.attr("url")       || url    || document.location.pathname;
-		obj    = e.attr("object")    || obj;
-		attrib = e.attr("attribute") || attrib;
-		e.rest_in_place(url, obj, attrib);
+		url    = Element.readAttribute(e, 'url')       || url    || document.location.pathname;
+		obj    = Element.readAttribute(e, 'object')    || obj;
+		attrib = Element.readAttribute(e, 'attribute') || attrib;
+		rest_in_place(e, url, obj, attrib);
 	});
-});		
-
+});
