@@ -1,0 +1,107 @@
+RestInPlace
+===========
+                                   _______
+                                  /       \
+                                  | R.I.P.|
+                                  |       |
+                                  |       |
+                                ---------------
+
+"REST in Place" is an AJAX Inplace-Editor, that talks to RESTful controllers.
+It requires absolutely no additional server-side code if your controller
+fulfills the following REST preconditions:
+ - It uses the HTTP PUT method to update a record
+ - It delivers an object in XML form for requests with
+   "Accept: application/xml" headers
+
+The editor works by PUTting the updated value to the server and GETting the
+updated record afterwards to display the updated value.
+That way any authentication methods or otherwise funky workflows in your
+controllers are used for the inplace-editors requests.
+
+Instructions
+============
+
+To make a piece of Text inplace-editable, wrap it into an element (a span
+usually) with class "rest_in_place". The editor needs 3 pieces of information
+to work: a URL, an object name and the attribute name. These are provided as
+follows:
+
+- put attributes into the element, like this:
+  
+    <span class="rest_in_place" url="/users/1" object="user" attribute="name">
+      Johnny
+    </span>
+  
+- if any of these attributes is missing, DOM parents of the elemet are searched
+  for them. That means you can write something like:
+  
+    <div object="user" url="/users/1">
+      Name:  <span class="rest_in_place" attribute="name" >Johnny</span><br/>
+      eMail: <span class="rest_in_place" attribute="email">johnny@somehost.com</span>
+    </div>
+  
+- You can completely omit the url, the current documents url is taken then.
+  With proper RESTful controllers this should always work, the url-attribute
+  is for cases when you want to edit a resource that is displayed as part of
+  a non-RESTful webpage.
+  
+- Rails provides the dom_id helper that constructs a dom id out of an
+  ActiveRecord for you. So, your HTML page may look like this:
+  
+    <div id="user_1">
+      Name:  <span class="rest_in_place" attribute="name" >Johnny</span><br/>
+      eMail: <span class="rest_in_place" attribute="email">johnny@somehost.com</span>
+    </div>
+  
+  REST in Place recognizes dom_ids of this form and derives the object parameter
+  from them, so that (with the current documents url used) you really only need
+  to provide the attributes name in most cases.
+  
+  !! -------- 
+     Note that a manually defined (in the element or in one of the parents)
+     object always overrides dom_id recognition.
+  !! --------
+  
+Example
+=======
+
+Your routes.rb:
+
+  map.resources :users
+  
+Your app/controllers/users_controller.rb:
+
+  class UsersController < ApplicationController
+    def show
+      @user = User.find params[:id]
+      respond_to do |type|
+        type.html
+        type.xml {render :xml => @user.to_xml}
+      end
+    end
+
+    def update
+      @user = User.find params[:id]
+      @user.update_attributes!(params[:user])
+      redirect_to @user, :status => :see_other
+    end
+  end
+
+Your app/views/users/show.html.erb:
+
+  <html>
+  <head>
+      <script type="text/javascript" src="/javascripts/jquery-1.2.1.js" charset="utf-8"></script>
+      <script type="text/javascript" src="/javascripts/rest_in_place.js" charset="utf-8"></script>
+  </head>
+  <body>
+      <div id="<%= dom_id @user %>">
+        ID: <%= @user.id %><br />
+        Name: <span class="rest_in_place" attribute="name"><%= @user.name %></span>
+      </div>
+  </body> 
+  </html>
+  
+
+Copyright (c) 2007 [Jan Varwig], released under the MIT license
