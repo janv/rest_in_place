@@ -1,13 +1,13 @@
-RestInPlace
+REST in Place
 ===========
-                                   _______
-                                  /       \
-                                  | R.I.P.|
-                                  |       |
-                                  |       |
-                                ---------------
+                                    _______
+                                   /       \
+                                   | R.I.P.|
+                                   |       |
+                                   |       |
+                                 -------------
 
-"REST in Place" is an AJAX Inplace-Editor, that talks to RESTful controllers.
+"REST in Place" is an AJAX Inplace-Editor that talks to RESTful controllers.
 It requires absolutely no additional server-side code if your controller
 fulfills the following REST preconditions:
  - It uses the HTTP PUT method to update a record
@@ -18,6 +18,9 @@ The editor works by PUTting the updated value to the server and GETting the
 updated record afterwards to display the updated value.
 That way any authentication methods or otherwise funky workflows in your
 controllers are used for the inplace-editors requests.
+
+URL:  http://svn.varwig.org/rails/plugins/rest_in_place/
+BLOG: http://jan.varwig.org/
 
 Instructions
 ============
@@ -104,6 +107,24 @@ Your app/views/users/show.html.erb:
       </div>
   </body> 
   </html>
-  
+
+Why jQuery?
+===========
+
+Why did I write this with jQuery instead of Prototype?
+
+Frankly I never even worked with prototype and have just recently gotten into
+Javascript using jQuery. jQuery seems superior to Protoype and will hopefully
+replace Prototye someday or at least get integrated into Rails as nicely as
+Prototype so people can chose which framework they want to use.
+
+Also, REST in Place at this stage is primarily a proof of concept.
+
+Participation
+=============
+
+I'd love to get comments, bug reports (or better, patches) about REST in Place.
+I haven't set up a trac yet, so please use my blog at http://jan.varwig.org/ to
+contact me.
 
 Copyright (c) 2007 [Jan Varwig], released under the MIT license
