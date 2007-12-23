@@ -22,6 +22,8 @@ controllers are used for the inplace-editors requests.
 Instructions
 ============
 
+REST in Place needs the jQuery library to work.
+
 To make a piece of Text inplace-editable, wrap it into an element (a span
 usually) with class "rest_in_place". The editor needs 3 pieces of information
 to work: a URL, an object name and the attribute name. These are provided as
