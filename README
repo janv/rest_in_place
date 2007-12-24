@@ -33,7 +33,7 @@ First, install REST in Place with
 To use it, include either rest_in_place.js or jquery.rest_in_place.js in your
 template (_after_ loading the framework's JavaScript ). rest_in_place.js is the
 version for the Prototype framework, jquery.rest_in_place.js uses the
-[jQuery][jQuery] framework.
+[jQuery][] framework.
 
 To make a piece of Text inplace-editable, wrap it into an element (a span
 usually) with class "rest_in_place". The editor needs 3 pieces of information
@@ -62,7 +62,7 @@ follows:
 -   Rails provides the dom_id helper that constructs a dom id out of an
     ActiveRecord for you. So, your HTML page may look like this:
     
-        <div id="user_1">
+        <div id="<%= dom_id @user # == "user_1" %>">
           Name:  <span class="rest_in_place" attribute="name" ><%= @user.name %></span><br/>
           eMail: <span class="rest_in_place" attribute="email"><%= @user.email %></span>
         </div>
@@ -107,7 +107,7 @@ Your app/views/users/show.html.erb:
 
     <html>
     <head>
-        <%= javascript_include_tag "jquery-1.2.1.js" , "rest_in_place" %>
+        <%= javascript_include_tag "jquery-1.2.1" , "jquery.rest_in_place" %>
     </head>
     <body>
         <div id="<%= dom_id @user %>">
