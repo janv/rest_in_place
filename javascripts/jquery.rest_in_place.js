@@ -45,7 +45,6 @@ jQuery(function(){
 		url    = e.attr("url")       || url    || document.location.pathname;
 		obj    = e.attr("object")    || obj;
 		attrib = e.attr("attribute") || attrib;
-		//e.rest_in_place(url, obj, attrib);
-		prototype_rip(e[0], url, obj, attrib);
+		e.rest_in_place(url, obj, attrib);
 	});
 });
