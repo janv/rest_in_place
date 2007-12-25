@@ -3,7 +3,7 @@ jQuery.fn.rest_in_place = function(url, objectName, attributeName) {
 	function clickFunction() {
 		var oldValue = e.html();
 		e.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + oldValue + '"></form>');
-		e.find("input").focus();
+		e.find("input")[0].select();
 		e.unbind('click');
 		e.find("input").blur(function(){
 			e.html(oldValue);
