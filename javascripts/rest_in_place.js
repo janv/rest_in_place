@@ -23,7 +23,12 @@ rest_in_place = function(element, url, objectName, attributeName){
 			return false;
 		}
 		e.innerHTML = '<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + oldValue + '"></form>';
+		Form.Element.focus(e.select('input')[0]);
 		Event.stopObserving(e, 'click', clickFunction);
+		Event.observe(e.select('input')[0], 'blur', function(){
+			e.innerHTML = oldValue;
+			Event.observe(e, 'click', clickFunction);
+		});
 		Event.observe(e.select('form')[0], 'submit', submitFunction)
 	}
 	
