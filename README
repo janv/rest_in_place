@@ -21,7 +21,7 @@ That way any authentication methods or otherwise funky workflows in your
 controllers are used for the inplace-editors requests.
 
 URL:  <http://svn.varwig.org/rails/plugins/rest_in_place/>  
-BLOG: <http://jan.varwig.org/>
+BLOG: <http://jan.varwig.org/projects/rest-in-place>
 
 Instructions
 ============
@@ -53,7 +53,7 @@ follows:
           Name:  <span class="rest_in_place" attribute="name" ><%= @user.name %></span><br/>
           eMail: <span class="rest_in_place" attribute="email"><%= @user.email %></span>
         </div>
-  
+    
 -   You can completely omit the url, to use the current document's url.
     With proper RESTful controllers this should always work, the explicit
     url-attribute is for cases when you want to edit a resource that is
@@ -66,7 +66,7 @@ follows:
           Name:  <span class="rest_in_place" attribute="name" ><%= @user.name %></span><br/>
           eMail: <span class="rest_in_place" attribute="email"><%= @user.email %></span>
         </div>
-  
+    
   REST in Place recognizes dom_ids of this form and derives the object parameter
   from them, so that (with the current documents url used) you really only need
   to provide the attributes name in most cases.
@@ -147,7 +147,8 @@ Participation
 =============
 
 I'd love to get comments, bug reports (or better, patches) about REST in Place.
-I haven't set up a trac yet, so please use my blog at <http://jan.varwig.org/> to
-contact me.
+I haven't set up a trac yet, so please use the project page at my blog
+to contact me about REST in Place:
+<http://jan.varwig.org/projects/rest-in-place>
 
 Copyright (c) 2007 [Jan Varwig], released under the MIT license
