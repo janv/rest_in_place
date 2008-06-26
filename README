@@ -35,6 +35,13 @@ template (_after_ loading the framework's JavaScript ). rest_in_place.js is the
 version for the Prototype framework, jquery.rest_in_place.js uses the
 [jQuery][] framework.
 
+For REST in Place to work with Rails request forgery protection, place the
+following lines into your applications layout:
+
+  <script type="text/javascript">
+    rails_authenticity_token = '<%= form_authenticity_token %>'
+  </script>
+
 To make a piece of Text inplace-editable, wrap it into an element (a span
 usually) with class "rest_in_place". The editor needs 3 pieces of information
 to work: a URL, an object name and the attribute name. These are provided as
