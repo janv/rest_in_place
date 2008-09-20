@@ -20,7 +20,8 @@ updated record afterwards to display the updated value.
 That way any authentication methods or otherwise funky workflows in your
 controllers are used for the inplace-editors requests.
 
-URL:  <http://svn.varwig.org/rails/plugins/rest_in_place/>  
+URL: <http://github.com/janv/rest_in_place/>
+REPOSITORY:  <git://github.com/janv/rest_in_place.git>  
 BLOG: <http://jan.varwig.org/projects/rest-in-place>
 
 Instructions
@@ -28,7 +29,7 @@ Instructions
 
 First, install REST in Place with
 
-    script/plugin install http://svn.varwig.org/rails/plugins/rest_in_place/
+    script/plugin install git://github.com/janv/rest_in_place.git
 
 To use it, include either rest_in_place.js or jquery.rest_in_place.js in your
 template (_after_ loading the framework's JavaScript ). rest_in_place.js is the
@@ -128,16 +129,14 @@ Why jQuery?
 ===========
 
 Why did I write this with jQuery instead of Prototype?
-(Note: The very first version only had the jQuery version included)
+(Note: The very first version only had the jQuery version included. Immediately
+after releasing the initial version I tried porting the plugin to Prototype.
+I was successful but Prototype really isn't as much fun to use as jQuery.)
 
 Frankly I never even worked with prototype and have just recently gotten into
 Javascript using jQuery. jQuery is superior to Protoype and will hopefully
 replace Prototye someday or at least get [integrated into Rails][jRails] as nicely as
 Prototype so people can chose which framework they want to use.
-
-Note: Immediately after releasing the initial version I tried porting the plugin
-to Prototype. I was successful but Prototype really isn't as much fun to use as
-jQuery.
 
 Also, REST in Place at this stage is primarily a proof of concept.
 
