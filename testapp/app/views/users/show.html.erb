@@ -1,0 +1,11 @@
+<html>
+<head>
+    <%= javascript_include_tag "jquery-1.2.6.min" , "jquery.rest_in_place" %>
+</head>
+<body>
+    <div id="<%= dom_id @user %>">
+      ID: <%= @user.id %><br />
+      Name: <span class="rest_in_place" attribute="name"><%= @user.name %></span>
+    </div>
+</body> 
+</html>

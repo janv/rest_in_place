@@ -1,0 +1,1 @@
+../../../javascripts/jquery.rest_in_place.js
