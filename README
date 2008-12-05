@@ -116,9 +116,9 @@ Your app/views/users/show.html.erb:
     <html>
     <head>
         <%= javascript_include_tag "jquery-1.2.6.min" , "jquery.rest_in_place" %>
-	    <script type="text/javascript">
-	      rails_authenticity_token = '<%= form_authenticity_token %>'
-	    </script>
+        <script type="text/javascript">
+          rails_authenticity_token = '<%= form_authenticity_token %>'
+        </script>
     </head>
     <body>
         <div id="<%= dom_id @user %>">
