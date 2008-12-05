@@ -19,9 +19,9 @@ jQuery.fn.rest_in_place = function(url, objectName, attributeName) {
 				"success" : function(){
 					jQuery.ajax({
 						"url" : url,
-						"beforeSend"  : function(xhr){ xhr.setRequestHeader("Accept", "application/xml"); },
-						"success" : function(xmldata, status){
-							e.html(jQuery(xmldata).find(objectName+' '+attributeName).text());
+						"beforeSend"  : function(xhr){ xhr.setRequestHeader("Accept", "application/javascript"); },
+						"success" : function(json){
+							e.html(eval('(' + json + ')' )[objectName][attributeName]);
 							e.click(clickFunction);
 						}
 					});

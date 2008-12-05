@@ -12,8 +12,8 @@ It requires absolutely no additional server-side code if your controller
 fulfills the following REST preconditions:
 
 -   It uses the HTTP PUT method to update a record
--   It delivers an object in XML form for requests with
-    "Accept: application/xml" headers
+-   It delivers an object in JSON form for requests with
+    "Accept: application/javascript" headers
 
 The editor works by PUTting the updated value to the server and GETting the
 updated record afterwards to display the updated value.
@@ -100,7 +100,7 @@ Your app/controllers/users_controller.rb:
         @user = User.find params[:id]
         respond_to do |type|
           type.html
-          type.xml {render :xml => @user.to_xml}
+          type.js {render :json => @user}
         end
       end
 
@@ -115,7 +115,7 @@ Your app/views/users/show.html.erb:
 
     <html>
     <head>
-        <%= javascript_include_tag "jquery-1.2.1" , "jquery.rest_in_place" %>
+        <%= javascript_include_tag "jquery-1.2.6.min" , "jquery.rest_in_place" %>
 	    <script type="text/javascript">
 	      rails_authenticity_token = '<%= form_authenticity_token %>'
 	    </script>
@@ -127,6 +127,11 @@ Your app/views/users/show.html.erb:
         </div>
     </body> 
     </html>
+
+You can run this example by switching to the testapp included in this
+plugin, running script/server (sqlite3 required) and going to
+localhost:3000/users/1
+Currently only the jQuery version is tested in the testapp.
 
 Why jQuery?
 ===========

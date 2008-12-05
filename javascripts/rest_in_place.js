@@ -12,9 +12,10 @@ rest_in_place = function(element, url, objectName, attributeName){
 				onSuccess: function(transport){
 					new Ajax.Request(url, {
 						method: 'get',
-						requestHeaders: { "Accept" : "application/xml"},
+						requestHeaders: { "Accept" : "application/javascript"},
 						onSuccess : function(xhr){
-							e.innerHTML = Element.select(xhr.responseXML, objectName+' '+attributeName)[0].textContent;
+							var data = xhr.responseText.evalJSON();
+							e.innerHTML = data[objectName][attributeName];
 							Event.observe(e,'click', clickFunction);
 						}
 					});

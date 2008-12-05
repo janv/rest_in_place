@@ -3,7 +3,7 @@ class UsersController < ApplicationController
     @user = User.find params[:id]
     respond_to do |type|
       type.html
-      type.xml {render :xml => @user.to_xml}
+      type.js {render :json => @user}
     end
   end
 
