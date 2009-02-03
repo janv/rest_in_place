@@ -14,7 +14,7 @@ jQuery.fn.rest_in_place = function(url, objectName, attributeName) {
 			e.html("saving...");
 			jQuery.ajax({
 				"url" : url,
-				"type" : "put",
+				"type" : "post",
 				"data" : "_method=put&"+objectName+'['+attributeName+']='+encodeURIComponent(value)+(window.rails_authenticity_token ? "&authenticity_token="+window.rails_authenticity_token : ''),
 				"success" : function(){
 					jQuery.ajax({
