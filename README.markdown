@@ -20,7 +20,7 @@ updated record afterwards to display the updated value.
 That way any authentication methods or otherwise funky workflows in your
 controllers are used for the inplace-editors requests.
 
-URL: <http://github.com/janv/rest_in_place/>
+URL: <http://github.com/janv/rest_in_place/>  
 REPOSITORY:  <git://github.com/janv/rest_in_place.git>  
 BLOG: <http://jan.varwig.org/projects/rest-in-place>
 
@@ -31,10 +31,11 @@ First, install REST in Place with
 
     script/plugin install git://github.com/janv/rest_in_place.git
 
-To use it, include either rest_in_place.js or jquery.rest_in_place.js in your
-template (_after_ loading the framework's JavaScript ). rest_in_place.js is the
-version for the Prototype framework, jquery.rest_in_place.js uses the
-[jQuery][] framework.
+To use it, include either `rest_in_place.js`, `jquery.rest_in_place.js` or
+`mootools.rest_in_place.js` in your template (_after_ loading your JavaScript
+framework ). `rest_in_place.js` is the version for the Prototype framework,
+`jquery.rest_in_place.js` uses the [jQuery][] framework and `mootools.rest_in_place.js`
+uses [mootools][].
 
 For REST in Place to work with Rails request forgery protection, place the
 following lines into your applications layout:
@@ -85,7 +86,8 @@ follows:
   !! --------
 
 [jQuery]: http://www.jquery.com/
-  
+[mootools]: http://mootools.net/
+
 Example
 =======
 
@@ -131,24 +133,14 @@ Your app/views/users/show.html.erb:
 You can run this example by switching to the testapp included in this
 plugin, running script/server (sqlite3 required) and going to
 localhost:3000/users/1
-Currently only the jQuery version is tested in the testapp.
 
-Why jQuery?
-===========
+Hint:  
+you need to set up the database first.
+Copy and edit `testapp/config/database.yml.sample` accordingly.
+If you don't want to use the included sqlite3 database, run `rake db:create`,
+`rake db:schema:load` and `rake rest_in_place:create_sample` to create a test
+dataset.
 
-Why did I write this with jQuery instead of Prototype?
-(Note: The very first version only had the jQuery version included. Immediately
-after releasing the initial version I tried porting the plugin to Prototype.
-I was successful but Prototype really isn't as much fun to use as jQuery.)
-
-Frankly I never even worked with prototype and have just recently gotten into
-Javascript using jQuery. jQuery is superior to Protoype and will hopefully
-replace Prototye someday or at least get [integrated into Rails][jRails] as nicely as
-Prototype so people can chose which framework they want to use.
-
-Also, REST in Place at this stage is primarily a proof of concept.
-
-[jRails]: http://ennerchi.com/projects/jrails
 
 Non-Rails
 =========
@@ -165,4 +157,12 @@ I haven't set up a trac yet, so please use the project page at my blog
 to contact me about REST in Place:
 <http://jan.varwig.org/projects/rest-in-place>
 
-Copyright (c) 2008 [Jan Varwig], released under the MIT license
+Acknowledgements
+================
+
+Thanks to Kevin Valdek for the mootools version (commit 086b409d38932426540f402bb642c66165c78976)
+and improvements to the testapp (commit 8eb121271345943588fe2a8467c790e7e37f3d7a).
+
+Thanks to nando for commit 17ca4e3060a1420bf13d9b9d89ceeba2bcc144d2
+
+Copyright (c) 2009 [Jan Varwig], released under the MIT license
