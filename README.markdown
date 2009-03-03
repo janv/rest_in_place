@@ -33,7 +33,7 @@ First, install REST in Place with
 
 To use it, include either `rest_in_place.js`, `jquery.rest_in_place.js` or
 `mootools.rest_in_place.js` in your template (_after_ loading your JavaScript
-framework ). `rest_in_place.js` is the version for the Prototype framework,
+framework). `rest_in_place.js` is the version for the Prototype framework,
 `jquery.rest_in_place.js` uses the [jQuery][] framework and `mootools.rest_in_place.js`
 uses [mootools][].
 
