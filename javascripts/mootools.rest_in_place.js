@@ -49,7 +49,7 @@ var RestInPlace = new Class({
           }.bind(this)
         }).setHeader('Accept', 'application/javascript').send();
       }.bind(this)
-    }).send(object + '[' + attribute +']=' + encodeURIComponent(value) + (window.rails_authenticity_token ? "&authenticity_token="+window.rails_authenticity_token : ''));
+    }).send(object + '[' + attribute +']=' + encodeURIComponent(value) + (window.rails_authenticity_token ? "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token) : ''));
   },
 
   getOption: function(name) {

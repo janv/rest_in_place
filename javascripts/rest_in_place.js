@@ -8,7 +8,7 @@ rest_in_place = function(element, url, objectName, attributeName){
       e.innerHTML = "saving...";
       new Ajax.Request(url,{
         method: 'put',
-        parameters: objectName+'['+attributeName+']='+encodeURIComponent(value)+(window.rails_authenticity_token ? "&authenticity_token="+window.rails_authenticity_token : ''),
+        parameters: objectName+'['+attributeName+']='+encodeURIComponent(value)+(window.rails_authenticity_token ? "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token) : ''),
         onSuccess: function(transport){
           new Ajax.Request(url, {
             method: 'get',
