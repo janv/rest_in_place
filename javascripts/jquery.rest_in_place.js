@@ -15,11 +15,12 @@ jQuery.fn.rest_in_place = function(url, objectName, attributeName) {
       jQuery.ajax({
         "url" : url,
         "type" : "post",
+        "beforeSend"  : function(xhr){ xhr.setRequestHeader("Accept", "application/json"); },
         "data" : "_method=put&"+objectName+'['+attributeName+']='+encodeURIComponent(value)+(window.rails_authenticity_token ? "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token) : ''),
         "success" : function(){
           jQuery.ajax({
             "url" : url,
-            "beforeSend"  : function(xhr){ xhr.setRequestHeader("Accept", "application/javascript"); },
+            "beforeSend"  : function(xhr){ xhr.setRequestHeader("Accept", "application/json"); },
             "success" : function(json){
               e.html(eval('(' + json + ')' )[objectName][attributeName]);
               e.click(clickFunction);
