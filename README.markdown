@@ -20,9 +20,9 @@ updated record afterwards to display the updated value.
 That way any authentication methods or otherwise funky workflows in your
 controllers are used for the inplace-editors requests.
 
-URL: <http://github.com/janv/rest_in_place/>  
-REPOSITORY:  <git://github.com/janv/rest_in_place.git>  
-BLOG: <http://jan.varwig.org/projects/rest-in-place>
+URL:         <http://github.com/janv/rest_in_place/>  
+REPOSITORY:  git://github.com/janv/rest_in_place.git
+BLOG:        <http://jan.varwig.org/projects/rest-in-place>
 
 Instructions
 ============
@@ -153,8 +153,10 @@ Participation
 =============
 
 I'd love to get comments, bug reports (or better, patches) about REST in Place.
-I haven't set up a trac yet, so please use the project page at my blog
-to contact me about REST in Place:
+For this, you can either fork the project and send a pull request, or submit a
+bug in the tracker at github: <http://github.com/janv/rest_in_place/issues>
+
+For general comments and questions, please use the comment function on my blog:
 <http://jan.varwig.org/projects/rest-in-place>
 
 Acknowledgements
