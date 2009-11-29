@@ -33,9 +33,9 @@ var RestInPlace = new Class({
     var value = this.element.getElement('input').get('value');
     this.element.set('html', 'saving...')
 
-    var object = this.getOption('object') || this.getObjectFromId();
-    var attribute = this.getOption('attribute');
-    var url = this.getOption('url') || document.location.pathname;
+    var object = this.getOption('data-object') || this.getObjectFromId();
+    var attribute = this.getOption('data-attribute');
+    var url = this.getOption('data-url') || document.location.pathname;
     new Request.HTML({
       url: url,
       method: 'put',

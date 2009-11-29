@@ -51,16 +51,16 @@ follows:
 
 -   put attributes into the element, like this:
     
-        <span class="rest_in_place" url="/users/1" object="user" attribute="name">
+        <span class="rest_in_place" data-url="/users/1" data-object="user" data-attribute="name">
           <%= @user.name %>
         </span>
   
 -   if any of these attributes is missing, DOM parents of the element are searched
     for them. That means you can write something like:
     
-        <div object="user" url="/users/1">
-          Name:  <span class="rest_in_place" attribute="name" ><%= @user.name %></span><br/>
-          eMail: <span class="rest_in_place" attribute="email"><%= @user.email %></span>
+        <div data-object="user" data-url="/users/1">
+          Name:  <span class="rest_in_place" data-attribute="name" ><%= @user.name %></span><br/>
+          eMail: <span class="rest_in_place" data-attribute="email"><%= @user.email %></span>
         </div>
     
 -   You can completely omit the url, to use the current document's url.
@@ -72,8 +72,8 @@ follows:
     ActiveRecord for you. So, your HTML page may look like this:
     
         <div id="<%= dom_id @user # == "user_1" %>">
-          Name:  <span class="rest_in_place" attribute="name" ><%= @user.name %></span><br/>
-          eMail: <span class="rest_in_place" attribute="email"><%= @user.email %></span>
+          Name:  <span class="rest_in_place" data-attribute="name" ><%= @user.name %></span><br/>
+          eMail: <span class="rest_in_place" data-attribute="email"><%= @user.email %></span>
         </div>
     
   REST in Place recognizes dom_ids of this form and derives the object parameter
@@ -125,7 +125,7 @@ Your app/views/users/show.html.erb:
     <body>
         <div id="<%= dom_id @user %>">
           ID: <%= @user.id %><br />
-          Name: <span class="rest_in_place" attribute="name"><%= @user.name %></span>
+          Name: <span class="rest_in_place" data-attribute="name"><%= @user.name %></span>
         </div>
     </body> 
     </html>

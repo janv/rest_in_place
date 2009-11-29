@@ -39,18 +39,18 @@ jQuery(function(){
     var e = jQuery(this);
     var url; var obj; var attrib;
     e.parents().each(function(){
-      url    = url    || jQuery(this).attr("url");
-      obj    = obj    || jQuery(this).attr("object");
-      attrib = attrib || jQuery(this).attr("attribute");
+      url    = url    || jQuery(this).attr("data-url");
+      obj    = obj    || jQuery(this).attr("data-object");
+      attrib = attrib || jQuery(this).attr("data-attribute");
     });
     e.parents().each(function(){
       if (res = this.id.match(/^(\w+)_(\d+)$/i)) {
         obj = obj || res[1];
       }
     });
-    url    = e.attr("url")       || url    || document.location.pathname;
-    obj    = e.attr("object")    || obj;
-    attrib = e.attr("attribute") || attrib;
+    url    = e.attr("data-url")       || url    || document.location.pathname;
+    obj    = e.attr("data-object")    || obj;
+    attrib = e.attr("data-attribute") || attrib;
     e.rest_in_place(url, obj, attrib);
   });
 });

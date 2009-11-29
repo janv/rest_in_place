@@ -40,18 +40,18 @@ Event.observe(window, 'load',function() {
   $$(".rest_in_place").each(function(e){
     var url; var obj; var attrib;
     Element.ancestors(e).each(function(a){
-      url    = url    || Element.readAttribute(a, 'url');
-      obj    = obj    || Element.readAttribute(a, 'object');
-      attrib = attrib || Element.readAttribute(a, 'attribute');
+      url    = url    || Element.readAttribute(a, 'data-url');
+      obj    = obj    || Element.readAttribute(a, 'data-object');
+      attrib = attrib || Element.readAttribute(a, 'data-attribute');
     });
     Element.ancestors(e).each(function(a){
       if (res = a.id.match(/^(\w+)_(\d+)$/i)) {
         obj = obj || res[1];
       }
     });
-    url    = Element.readAttribute(e, 'url')       || url    || document.location.pathname;
-    obj    = Element.readAttribute(e, 'object')    || obj;
-    attrib = Element.readAttribute(e, 'attribute') || attrib;
+    url    = Element.readAttribute(e, 'data-url')       || url    || document.location.pathname;
+    obj    = Element.readAttribute(e, 'data-object')    || obj;
+    attrib = Element.readAttribute(e, 'data-attribute') || attrib;
     rest_in_place(e, url, obj, attrib);
   });
 });
