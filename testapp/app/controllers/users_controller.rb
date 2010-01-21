@@ -1,11 +1,8 @@
 class UsersController < ApplicationController
   
   def index
-    begin
-      redirect_to User.first
-    rescue Exception
-      raise "Seems like you haven't created any sample record. Please run: rake rest_in_place:create_sample"
-    end
+    User.create! :name => "Frank" unless User.first
+    redirect_to User.first
   end
   
   def show
