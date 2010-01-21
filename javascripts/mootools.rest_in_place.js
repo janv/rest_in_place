@@ -47,7 +47,7 @@ var RestInPlace = new Class({
             this.element.set('html', json[object][attribute]);
             this.element.addEvent('click', this.onClick);
           }.bind(this)
-        }).setHeader('Accept', 'application/javascript').send();
+        }).setHeader('Accept', 'application/json').send();
       }.bind(this)
     }).send(object + '[' + attribute +']=' + encodeURIComponent(value) + (window.rails_authenticity_token ? "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token) : ''));
   },

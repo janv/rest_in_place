@@ -12,7 +12,7 @@ rest_in_place = function(element, url, objectName, attributeName){
         onSuccess: function(transport){
           new Ajax.Request(url, {
             method: 'get',
-            requestHeaders: { "Accept" : "application/javascript"},
+            requestHeaders: { "Accept" : "application/json"},
             onSuccess : function(xhr){
               var data = xhr.responseText.evalJSON();
               e.innerHTML = data[objectName][attributeName];
