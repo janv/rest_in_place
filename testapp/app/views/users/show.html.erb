@@ -1,12 +1,13 @@
 <html>
 <head>
-    <%= javascript_include_tag "jquery-1.2.6.min" , "jquery.rest_in_place" %>
+    <%= javascript_include_tag "jquery-1.4.min" , "jquery.rest_in_place" %>
     <%#= javascript_include_tag "prototype" , "rest_in_place" %>
     <%#= javascript_include_tag "mootools-121-core" , "mootools.rest_in_place" %>
     <script type="text/javascript">
       rails_authenticity_token = '<%= form_authenticity_token %>'
       jQuery(function(){
         jQuery(".rest_in_place").rest_in_place();
+        jQuery("body").prepend("<p>jQuery Version: " + jQuery.fn.jquery + "</p>")
       });
     </script>
 </head>

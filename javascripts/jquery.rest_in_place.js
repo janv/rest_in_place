@@ -24,7 +24,7 @@ jQuery.fn.rest_in_place = function() {
     e.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + oldValue + '"></form>')
       .find("input")[0]
         .select();
-    e.unbind('click')
+    e.unbind('click', clickFunction)
       .find("input").blur(function inputBlurHandler(){
         e.html(oldValue)
           .click(clickFunction);
@@ -35,14 +35,18 @@ jQuery.fn.rest_in_place = function() {
       jQuery.ajax({
         "url" : url,
         "type" : "post",
+        "dataType" : "text",
         "beforeSend"  : function(xhr){ xhr.setRequestHeader("Accept", "application/json"); },
         "data" : "_method=put&"+objectName+'['+attributeName+']='+encodeURIComponent(value)+(window.rails_authenticity_token ? "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token) : ''),
-        "success" : function saveSuccessCallback(){
+        "success" : function saveSuccessCallback(data, textStatus){
           jQuery.ajax({
             "url" : url,
             "beforeSend"  : function(xhr){ xhr.setRequestHeader("Accept", "application/json"); },
-            "success" : function loadSuccessCallback(json){
-              e.html(eval('(' + json + ')' )[objectName][attributeName]);
+            "success" : function loadSuccessCallback(data){
+              if (jQuery.fn.jquery < "1.4") {
+                data = eval('(' + data + ')' );
+              }
+              e.html(data[objectName][attributeName]);
               e.click(clickFunction);
             }
           });
