@@ -2,42 +2,7 @@ function RestInPlaceEditor(e) {
   this.element = jQuery(e);
   this.initOptions();
   
-  var editor = this;
-  
-  function clickHandler() {
-    var oldValue = editor.element.html();
-    editor.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + oldValue + '"></form>')
-    editor.element.find("input")[0].select();
-    editor.element.unbind('click', clickHandler)
-    editor.element.find("input").blur(function inputBlurHandler(){
-      editor.element.html(oldValue).click(clickHandler);
-    })
-    editor.element.find("form").submit(function submitHandler(){
-      jQuery.ajax({
-        "url"        : editor.url,
-        "type"       : "post",
-        "dataType"   : "text",
-        "beforeSend" : function(xhr){ xhr.setRequestHeader("Accept", "application/json"); },
-        "data"       : editor.requestData(),
-        "success"    : function saveSuccessCallback(data, textStatus){
-          jQuery.ajax({
-            "url"        : editor.url,
-            "beforeSend" : function(xhr){ xhr.setRequestHeader("Accept", "application/json"); },
-            "success"    : function loadSuccessCallback(data){
-              //jq14: data as JS object, not string.
-              if (jQuery.fn.jquery < "1.4") data = eval('(' + data + ')' );
-              editor.element.html(data[editor.objectName][editor.attributeName]);
-              editor.element.click(clickHandler);
-            }
-          });
-        }
-      });
-      editor.element.html("saving...");
-      return false;
-    })
-  }
-  editor.element.click(clickHandler);
-  
+  this.element.bind('click', {editor: this}, this.clickHandler);
 }
 
 RestInPlaceEditor.prototype = {
@@ -70,8 +35,54 @@ RestInPlaceEditor.prototype = {
       data += "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token);
     }
     return data;
-  }
+  },
   
+  loadSuccessCallback : function(data) {
+    //jq14: data as JS object, not string.
+    if (jQuery.fn.jquery < "1.4") data = eval('(' + data + ')' );
+    this.element.html(data[this.objectName][this.attributeName]);
+    this.element.click(this.clickHandler);    
+  },
+  
+  ajax : function(options) {
+    options.url = this.url;
+    options.beforeSend = function(xhr){ xhr.setRequestHeader("Accept", "application/json"); };
+    return jQuery.ajax(options);
+  },
+  
+  clickHandler : function(event) {
+    var editor = event.data.editor;
+    editor.oldValue = editor.element.html();
+    
+    editor.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + editor.oldValue + '"></form>')
+    editor.element.find("input")[0].select();
+    editor.element.unbind('click', editor.clickHandler)
+    editor.element.find("input").bind('blur',  {editor: editor}, editor.inputBlurHandler);
+    editor.element.find("form").bind('submit', {editor: editor}, editor.submitHandler)
+  },
+
+  inputBlurHandler : function(event) {
+    var editor   = event.data.editor;
+    editor.element
+      .html(editor.oldValue)
+      .bind('click', {editor: editor}, editor.clickHandler);
+  },
+  
+  submitHandler : function(event) {
+    var editor = event.data.editor;
+    editor.ajax({
+      "type"       : "post",
+      "dataType"   : "text",
+      "data"       : editor.requestData(),
+      "success"    : function(){
+        editor.ajax({
+          "success" : function(data){ editor.loadSuccessCallback(data) }
+        });
+      }
+    });
+    editor.element.html("saving...");
+    return false;
+  }
 }
 
 
