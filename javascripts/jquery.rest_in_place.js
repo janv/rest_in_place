@@ -54,7 +54,3 @@ jQuery.fn.rest_in_place = function() {
   this.click(clickFunction);
   return this;
 }
-
-jQuery(function(){
-  jQuery(".rest_in_place").rest_in_place();
-});
