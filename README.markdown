@@ -13,7 +13,7 @@ fulfills the following REST preconditions:
 
 -   It uses the HTTP PUT method to update a record
 -   It delivers an object in JSON form for requests with
-    "Accept: application/javascript" headers
+    "Accept: application/json" headers
 
 The editor works by PUTting the updated value to the server and GETting the
 updated record afterwards to display the updated value.
@@ -24,7 +24,7 @@ URL:         <http://github.com/janv/rest_in_place/>
 REPOSITORY:  git://github.com/janv/rest_in_place.git
 BLOG:        <http://jan.varwig.org/projects/rest-in-place>
 
-Instructions
+Installation
 ============
 
 First, install REST in Place with
@@ -37,12 +37,40 @@ framework). `rest_in_place.js` is the version for the Prototype framework,
 `jquery.rest_in_place.js` uses the [jQuery][] framework and `mootools.rest_in_place.js`
 uses [mootools][].
 
+[jQuery]: http://www.jquery.com/
+[mootools]: http://mootools.net/
+
+jQuery vs. the other variants
+=============================
+
+Only the jQuery version of REST in Place is actively maintained by me.
+The Prototype version was part of the original proof of concept code, but since
+I don't work with Prototype, I have no interest in personally developing it.
+I don't know much about mootools either, the REST in Place variant was
+contributed by Kevin Valdek. I'll happily include any further improvements of
+these variants, but I won't write them myself, so they might not be in sync
+with the jQuery version in terms of features.
+
+That aside, I made a change to the jQuery version and turned it into a proper
+jQuery plugin. This means that it does not automatically execute anymore on
+startup to convert all ".rest_in_place" elements into editable fields.
+Instead please include the following line of code in your document's onLoad
+handler:
+
+    jQuery(".rest_in_place").rest_in_place();
+
+Rails Request forgery Protection
+================================
+
 For REST in Place to work with Rails request forgery protection, place the
 following lines into your applications layout:
 
     <script type="text/javascript">
       rails_authenticity_token = '<%= form_authenticity_token %>'
     </script>
+
+Usage Instructions
+==================
 
 To make a piece of Text inplace-editable, wrap it into an element (a span
 usually) with class "rest_in_place". The editor needs 3 pieces of information
@@ -63,7 +91,7 @@ follows:
           eMail: <span class="rest_in_place" data-attribute="email"><%= @user.email %></span>
         </div>
     
--   You can completely omit the url, to use the current document's url.
+-   You can completely omit the url to use the current document's url.
     With proper RESTful controllers this should always work, the explicit
     url-attribute is for cases when you want to edit a resource that is
     displayed as part of a non-RESTful webpage.
@@ -85,9 +113,6 @@ follows:
   !! object always overrides dom_id recognition.  
   !! --------
 
-[jQuery]: http://www.jquery.com/
-[mootools]: http://mootools.net/
-
 Example
 =======
 
@@ -102,14 +127,23 @@ Your app/controllers/users_controller.rb:
         @user = User.find params[:id]
         respond_to do |type|
           type.html
-          type.js {render :json => @user}
+          type.json {render :json => @user}
         end
       end
 
       def update
         @user = User.find params[:id]
-        @user.update_attributes!(params[:user])
-        redirect_to @user, :status => :see_other
+        if @user.update_attributes!(params[:user])
+          respond_to do |format|
+            format.html { redirect_to( @person )  }
+            format.json { render :nothing =>  true }
+          end
+        else
+          respond_to do |format|
+            format.html { render :action  => :edit } # edit.html.erb
+            format.json { render :nothing =>  true }
+          end
+        end
       end
     end
 
@@ -120,6 +154,9 @@ Your app/views/users/show.html.erb:
         <%= javascript_include_tag "jquery-1.2.6.min" , "jquery.rest_in_place" %>
         <script type="text/javascript">
           rails_authenticity_token = '<%= form_authenticity_token %>'
+          jQuery(function(){
+            jQuery(".rest_in_place").rest_in_place();
+          });
         </script>
     </head>
     <body>
@@ -137,17 +174,15 @@ localhost:3000/users/1
 Hint:  
 you need to set up the database first.
 Copy and edit `testapp/config/database.yml.sample` accordingly.
-If you don't want to use the included sqlite3 database, run `rake db:create`,
-`rake db:schema:load` and `rake rest_in_place:create_sample` to create a test
-dataset.
-
+If you don't want to use the included sqlite3 database, run `rake db:create`
+and `rake db:schema:load`.
 
 Non-Rails
 =========
 
 REST in Place was written for Ruby on Rails but is usable with any kind of
-RESTful web api. Just include the rest_in_place.js in your webpage and follow
-the instructions.
+RESTful web api. You should be able to adapt the instructions above to your
+framework easily.
 
 Participation
 =============
