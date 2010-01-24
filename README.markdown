@@ -31,33 +31,31 @@ First, install REST in Place with
 
     script/plugin install git://github.com/janv/rest_in_place.git
 
-To use it, include either `rest_in_place.js`, `jquery.rest_in_place.js` or
-`mootools.rest_in_place.js` in your template (_after_ loading your JavaScript
-framework). `rest_in_place.js` is the version for the Prototype framework,
-`jquery.rest_in_place.js` uses the [jQuery][] framework and `mootools.rest_in_place.js`
-uses [mootools][].
+To use it, include `jquery.rest_in_place.js` in your template and execute the
+following in your document's onLoad handler:
+
+    jQuery(".rest_in_place").rest_in_place();
+
+
+Other JS Frameworks
+===================
+
+Besides the [jQuery][] version, this repository also includes a [mootools][]
+and a [Prototype][] version (`rest_in_place.js` and `mootols.rest_in_place.js`
+respectively).
+
+REST in Place originally was a mere proof of concept, written in jQuery and
+Prototype. I haven't touched it much in a while, but it apparently proved
+useful to a lot of people and I want to develop it more actively in the future.
+Unfortunately I never work with neither mootools nor Prototype, so I can only
+improve the jQuery version of the plugin.
+
+I will happily include contributions for the other versions, but I won't
+develop them on my own.
 
 [jQuery]: http://www.jquery.com/
 [mootools]: http://mootools.net/
-
-jQuery vs. the other variants
-=============================
-
-Only the jQuery version of REST in Place is actively maintained by me.
-The Prototype version was part of the original proof of concept code, but since
-I don't work with Prototype, I have no interest in personally developing it.
-I don't know much about mootools either, the REST in Place variant was
-contributed by Kevin Valdek. I'll happily include any further improvements of
-these variants, but I won't write them myself, so they might not be in sync
-with the jQuery version in terms of features.
-
-That aside, I made a change to the jQuery version and turned it into a proper
-jQuery plugin. This means that it does not automatically execute anymore on
-startup to convert all ".rest_in_place" elements into editable fields.
-Instead please include the following line of code in your document's onLoad
-handler:
-
-    jQuery(".rest_in_place").rest_in_place();
+[Prototype]: http://www.prototypejs.org/
 
 Rails Request forgery Protection
 ================================
@@ -177,6 +175,13 @@ Copy and edit `testapp/config/database.yml.sample` accordingly.
 If you don't want to use the included sqlite3 database, run `rake db:create`
 and `rake db:schema:load`.
 
+Troubleshooting
+===============
+
+REST in Place is very picky about correct headers and formatting.
+If you experience errors, please make sure your controller sends responses as
+properly formatted JSON with the correct MIME-Type "application/json".
+
 Non-Rails
 =========
 
@@ -202,4 +207,4 @@ and improvements to the testapp (commit 8eb121271345943588fe2a8467c790e7e37f3d7a
 
 Thanks to nando for commit 17ca4e3060a1420bf13d9b9d89ceeba2bcc144d2
 
-Copyright (c) 2009 [Jan Varwig], released under the MIT license
+Copyright (c) 2010 [Jan Varwig], released under the MIT license
