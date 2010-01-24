@@ -23,6 +23,7 @@ var rest_in_place = {
               "url"        : options.url,
               "beforeSend" : function(xhr){ xhr.setRequestHeader("Accept", "application/json"); },
               "success"    : function loadSuccessCallback(data){
+                //jq14: data as JS object, not string.
                 if (jQuery.fn.jquery < "1.4") data = eval('(' + data + ')' );
                 e.html(data[options.objectName][options.attributeName]);
                 e.click(clickHandler);
@@ -64,12 +65,11 @@ var rest_in_place = {
   },
   
   "requestData" : function(options, value) {
-    var data = {};
-    data["_method"] = "put";
-    data[options.objectName] = {};
-    data[options.objectName][options.attributeName] = value;
+    //jq14: data as JS object, not string.
+    var data = "_method=put"
+    data += "&"+options.objectName+'['+options.attributeName+']='+encodeURIComponent(value);
     if (window.rails_authenticity_token) {
-      data["authenticity_token"] = window.rails_authenticity_token;
+      data += "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token);
     }
     return data;
   }
