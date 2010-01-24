@@ -37,6 +37,13 @@ RestInPlaceEditor.prototype = {
     return data;
   },
   
+  activateForm : function() {
+    this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + this.oldValue + '"></form>')
+    this.element.find("input")[0].select();    
+    this.element.find("input").bind('blur',  {editor: this}, this.inputBlurHandler);
+    this.element.find("form").bind('submit', {editor: this}, this.submitHandler)
+  },
+  
   loadSuccessCallback : function(data) {
     //jq14: data as JS object, not string.
     if (jQuery.fn.jquery < "1.4") data = eval('(' + data + ')' );
@@ -52,13 +59,9 @@ RestInPlaceEditor.prototype = {
   
   clickHandler : function(event) {
     var editor = event.data.editor;
-    editor.oldValue = editor.element.html();
-    
-    editor.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + editor.oldValue + '"></form>')
-    editor.element.find("input")[0].select();
+    editor.oldValue = editor.element.html();    
     editor.element.unbind('click', editor.clickHandler)
-    editor.element.find("input").bind('blur',  {editor: editor}, editor.inputBlurHandler);
-    editor.element.find("form").bind('submit', {editor: editor}, editor.submitHandler)
+    editor.activateForm();
   },
 
   inputBlurHandler : function(event) {
