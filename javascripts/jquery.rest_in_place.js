@@ -88,7 +88,7 @@ RestInPlaceEditor.prototype = {
     //jq14: data as JS object, not string.
     if (jQuery.fn.jquery < "1.4") data = eval('(' + data + ')' );
     this.element.html(data[this.objectName][this.attributeName]);
-    this.element.bind('click', {edtor: this}, this.clickHandler);    
+    this.element.bind('click', {editor: this}, this.clickHandler);    
   },
   
   clickHandler : function(event) {
