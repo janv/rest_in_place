@@ -1,7 +1,7 @@
 class UsersController < ApplicationController
   
   def index
-    User.create! :name => "Frank" unless User.first
+    User.create! :name => "Frank", :hobbies => "Fishing" unless User.first
     redirect_to User.first
   end
   
