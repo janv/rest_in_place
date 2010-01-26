@@ -1,12 +1,15 @@
 class UsersController < ApplicationController
   
   def index
-    User.create! :name => "Frank", :hobbies => "Fishing" unless User.first
+    User.delete_all
+    User.create! :name => "Frank",  :hobbies => "Fishing"
+    User.create! :name => "Walter", :hobbies => "Walking"
     redirect_to User.first
   end
   
   def show
     @user = User.find params[:id]
+    @user2 = User.find(:all)[1]
     respond_to do |type|
       type.html
       type.json {render :json => @user}

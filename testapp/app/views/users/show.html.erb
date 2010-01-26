@@ -17,5 +17,11 @@
       Name: <span class="rest_in_place" data-attribute="name"><%= @user.name %></span><br/><br/>
       Hobbies: <span class="rest_in_place" data-attribute="hobbies"><%= @user.hobbies %></span>
     </div>
+
+    <div id="<%= dom_id @user2 %>" data-url="<%= url_for(@user2) %>">
+      ID: <%= @user2.id %><br />
+      Name: <span class="rest_in_place" data-attribute="name"><%= @user2.name %></span><br/><br/>
+      Hobbies: <span class="rest_in_place" data-attribute="hobbies"><%= @user2.hobbies %></span>
+    </div>    
 </body> 
 </html>

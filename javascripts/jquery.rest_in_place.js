@@ -49,9 +49,9 @@ RestInPlaceEditor.prototype = {
     // Try parent supplied info
     var self = this;
     self.element.parents().each(function(){
-      self.url           = jQuery(this).attr("data-url");
-      self.objectName    = jQuery(this).attr("data-object");
-      self.attributeName = jQuery(this).attr("data-attribute");
+      self.url           = self.url           || jQuery(this).attr("data-url");
+      self.objectName    = self.objectName    || jQuery(this).attr("data-object");
+      self.attributeName = self.attributeName || jQuery(this).attr("data-attribute");
     });
     // Try Rails-id based if parents did not explicitly supply something
     self.element.parents().each(function(){
