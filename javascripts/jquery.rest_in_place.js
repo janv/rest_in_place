@@ -107,6 +107,8 @@ RestInPlaceEditor.prototype = {
 
 
 jQuery.fn.rest_in_place = function() {
-  this.data('restInPlaceEditor', new RestInPlaceEditor(this));
+  this.each(function(){
+    jQuery(this).data('restInPlaceEditor', new RestInPlaceEditor(this));
+  })
   return this;
 }
