@@ -102,14 +102,22 @@ follows:
           eMail: <span class="rest_in_place" data-attribute="email"><%= @user.email %></span>
         </div>
     
-  REST in Place recognizes dom_ids of this form and derives the object parameter
-  from them, so that (with the current documents url used) you really only need
-  to provide the attributes name in most cases.
-  
-  !! --------  
-  !! Note that a manually defined (in the element or in one of the parents)  
-  !! object always overrides dom_id recognition.  
-  !! --------
+    REST in Place recognizes dom_ids of this form and derives the object parameter
+    from them, so that (with the current documents url used) you really only need
+    to provide the attributes name in most cases.
+   
+    **Note that a manually defined (in the element or in one of the parents)  
+    object always overrides dom_id recognition.**
+
+-   REST in Place supports multiple form types. The default type is a input
+    field, a textarea is also supported. To select a form type use the
+    `data-formtype` attribute in the element and set it to the name of your
+    formtype ( `input`, or `textarea` ).
+    
+    To write your own form types, just extend the `RestInPlace.forms` object
+    and select your new form type throught the `data-formtype` attribute.
+    
+    **This feature is only supported in the jQuery version.**
 
 Example
 =======
@@ -149,25 +157,26 @@ Your app/views/users/show.html.erb:
 
     <html>
     <head>
-        <%= javascript_include_tag "jquery-1.2.6.min" , "jquery.rest_in_place" %>
-        <script type="text/javascript">
-          rails_authenticity_token = '<%= form_authenticity_token %>'
-          jQuery(function(){
-            jQuery(".rest_in_place").rest_in_place();
-          });
-        </script>
+      <%= javascript_include_tag "jquery-1.4.min" , "jquery.rest_in_place" %>
+      <script type="text/javascript">
+        rails_authenticity_token = '<%= form_authenticity_token %>'
+        jQuery(function(){
+          jQuery(".rest_in_place").rest_in_place();
+        });
+      </script>
     </head>
     <body>
-        <div id="<%= dom_id @user %>">
-          ID: <%= @user.id %><br />
-          Name: <span class="rest_in_place" data-attribute="name"><%= @user.name %></span>
-        </div>
+      <div id="<%= dom_id @user %>">
+        ID: <%= @user.id %><br />
+        Name: <span class="rest_in_place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
+        Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
+      </div>
     </body> 
     </html>
 
-You can run this example by switching to the testapp included in this
-plugin, running script/server (sqlite3 required) and going to
-localhost:3000/users/1
+You can run this example by running to the testapp included in this
+plugin with script/server (sqlite3 required) and visiting
+localhost:3000/users/
 
 Hint:  
 you need to set up the database first.
