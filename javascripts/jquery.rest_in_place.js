@@ -113,8 +113,9 @@ RestInPlaceEditor.forms = {
       this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + this.oldValue + '"></form>');
       this.element.find('input')[0].select();
       this.element.find("form")
-        .bind('blur',   {editor: this}, RestInPlaceEditor.forms["_default"].inputBlurHandler)
         .bind('submit', {editor: this}, RestInPlaceEditor.forms["_default"].submitHandler);
+      this.element.find("input")
+        .bind('blur',   {editor: this}, RestInPlaceEditor.forms["_default"].inputBlurHandler);
     },
     
     getValue :  function() {
