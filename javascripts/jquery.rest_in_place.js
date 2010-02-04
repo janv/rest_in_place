@@ -2,6 +2,8 @@ function RestInPlaceEditor(e) {
   this.element = jQuery(e);
   this.initOptions();
   
+  this.bindForm();
+  
   this.element.bind('click', {editor: this}, this.clickHandler);
 }
 
@@ -36,11 +38,7 @@ RestInPlaceEditor.prototype = {
   },
   
   activateForm : function() {
-    this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + this.oldValue + '"></form>');
-    this.element.find('input')[0].select();
-    this.element.find("form")
-      .bind('blur',   {editor: this}, this.inputBlurHandler)
-      .bind('submit', {editor: this}, this.submitHandler);
+    alert("The form was not properly initialized. activateForm is unbound");
   },
   
   // Helper Functions ////////////////////////////////////////////////////////
@@ -66,10 +64,21 @@ RestInPlaceEditor.prototype = {
     self.attributeName = self.element.attr("data-attribute") || self.attributeName;
   },
   
-  requestData : function(value) {
+  bindForm : function() {
+    //TODO Select Form based on class here
+    this.activateForm = RestInPlaceEditor.forms["_default"].activateForm;
+    this.getValue     = RestInPlaceEditor.forms["_default"].getValue;
+  },
+  
+  getValue : function() {
+    alert("The form was not properly initialized. getValue is unbound");    
+  },
+  
+  /* Generate the data sent in the POST request */
+  requestData : function() {
     //jq14: data as JS object, not string.
     var data = "_method=put";
-    data += "&"+this.objectName+'['+this.attributeName+']='+encodeURIComponent(this.element.find("input").val());
+    data += "&"+this.objectName+'['+this.attributeName+']='+encodeURIComponent(this.getValue());
     if (window.rails_authenticity_token) {
       data += "&authenticity_token="+encodeURIComponent(window.rails_authenticity_token);
     }
@@ -93,18 +102,35 @@ RestInPlaceEditor.prototype = {
   
   clickHandler : function(event) {
     event.data.editor.activate();
-  },
-
-  inputBlurHandler : function(event) {
-    event.data.editor.abort();
-  },
-  
-  submitHandler : function(event) {
-    event.data.editor.update();
-    return false;
   }
 }
 
+
+RestInPlaceEditor.forms = {
+  "_default" : {
+    /* is bound to the editor and called to replace the element's content with a form for editing data */
+    activateForm : function() {
+      this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + this.oldValue + '"></form>');
+      this.element.find('input')[0].select();
+      this.element.find("form")
+        .bind('blur',   {editor: this}, RestInPlaceEditor.forms["_default"].inputBlurHandler)
+        .bind('submit', {editor: this}, RestInPlaceEditor.forms["_default"].submitHandler);
+    },
+    
+    getValue :  function() {
+      return this.element.find("input").val();
+    },
+
+    inputBlurHandler : function(event) {
+      event.data.editor.abort();
+    },
+
+    submitHandler : function(event) {
+      event.data.editor.update();
+      return false;
+    }
+  }
+}
 
 jQuery.fn.rest_in_place = function() {
   this.each(function(){
