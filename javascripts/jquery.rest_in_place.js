@@ -1,7 +1,6 @@
 function RestInPlaceEditor(e) {
   this.element = jQuery(e);
   this.initOptions();
-  
   this.bindForm();
   
   this.element.bind('click', {editor: this}, this.clickHandler);
@@ -48,6 +47,7 @@ RestInPlaceEditor.prototype = {
     var self = this;
     self.element.parents().each(function(){
       self.url           = self.url           || jQuery(this).attr("data-url");
+      self.formType      = self.formType      || jQuery(this).attr("data-formtype");
       self.objectName    = self.objectName    || jQuery(this).attr("data-object");
       self.attributeName = self.attributeName || jQuery(this).attr("data-attribute");
     });
@@ -59,18 +59,15 @@ RestInPlaceEditor.prototype = {
       }
     });
     // Load own attributes (overrides all others)
-    self.url           = self.element.attr("data-url")       || self.url    || document.location.pathname;
+    self.url           = self.element.attr("data-url")       || self.url      || document.location.pathname;
+    self.formType      = self.element.attr("data-formtype")  || self.formtype || "input";
     self.objectName    = self.element.attr("data-object")    || self.objectName;
     self.attributeName = self.element.attr("data-attribute") || self.attributeName;
   },
   
   bindForm : function() {
-    var form = "_default";
-    if (this.element.hasClass("textarea")) {
-      form = "textarea";
-    }
-    this.activateForm = RestInPlaceEditor.forms[form].activateForm;
-    this.getValue     = RestInPlaceEditor.forms[form].getValue;
+    this.activateForm = RestInPlaceEditor.forms[this.formType].activateForm;
+    this.getValue     = RestInPlaceEditor.forms[this.formType].getValue;
   },
   
   getValue : function() {
@@ -110,15 +107,15 @@ RestInPlaceEditor.prototype = {
 
 
 RestInPlaceEditor.forms = {
-  "_default" : {
+  "input" : {
     /* is bound to the editor and called to replace the element's content with a form for editing data */
     activateForm : function() {
       this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + this.oldValue + '"></form>');
       this.element.find('input')[0].select();
       this.element.find("form")
-        .bind('submit', {editor: this}, RestInPlaceEditor.forms["_default"].submitHandler);
+        .bind('submit', {editor: this}, RestInPlaceEditor.forms.input.submitHandler);
       this.element.find("input")
-        .bind('blur',   {editor: this}, RestInPlaceEditor.forms["_default"].inputBlurHandler);
+        .bind('blur',   {editor: this}, RestInPlaceEditor.forms.input.inputBlurHandler);
     },
     
     getValue :  function() {
@@ -141,7 +138,7 @@ RestInPlaceEditor.forms = {
       this.element.html('<form action="javascript:void(0)" style="display:inline;"><textarea>' + this.oldValue + '</textarea></form>');
       this.element.find('textarea')[0].select();
       this.element.find("textarea")
-        .bind('blur', {editor: this}, RestInPlaceEditor.forms["textarea"].blurHandler);
+        .bind('blur', {editor: this}, RestInPlaceEditor.forms.textarea.blurHandler);
     },
     
     getValue :  function() {
