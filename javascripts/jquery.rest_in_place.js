@@ -65,9 +65,12 @@ RestInPlaceEditor.prototype = {
   },
   
   bindForm : function() {
-    //TODO Select Form based on class here
-    this.activateForm = RestInPlaceEditor.forms["_default"].activateForm;
-    this.getValue     = RestInPlaceEditor.forms["_default"].getValue;
+    var form = "_default";
+    if (this.element.hasClass("textarea")) {
+      form = "textarea";
+    }
+    this.activateForm = RestInPlaceEditor.forms[form].activateForm;
+    this.getValue     = RestInPlaceEditor.forms[form].getValue;
   },
   
   getValue : function() {
@@ -130,6 +133,25 @@ RestInPlaceEditor.forms = {
       event.data.editor.update();
       return false;
     }
+  },
+
+  "textarea" : {
+    /* is bound to the editor and called to replace the element's content with a form for editing data */
+    activateForm : function() {
+      this.element.html('<form action="javascript:void(0)" style="display:inline;"><textarea>' + this.oldValue + '</textarea></form>');
+      this.element.find('textarea')[0].select();
+      this.element.find("textarea")
+        .bind('blur', {editor: this}, RestInPlaceEditor.forms["textarea"].blurHandler);
+    },
+    
+    getValue :  function() {
+      return this.element.find("textarea").val();
+    },
+
+    blurHandler : function(event) {
+      event.data.editor.update();
+    }
+
   }
 }
 
