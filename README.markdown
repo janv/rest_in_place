@@ -24,6 +24,9 @@ URL:         <http://github.com/janv/rest_in_place/>
 REPOSITORY:  git://github.com/janv/rest_in_place.git
 BLOG:        <http://jan.varwig.org/projects/rest-in-place>
 
+If you like REST in Place, you can flattr me: <a href="http://flattr.com/thing/1984/REST-in-Place" target="_blank">
+<img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
+
 Installation
 ============
 
