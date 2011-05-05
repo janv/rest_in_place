@@ -25,11 +25,11 @@ RestInPlaceEditor.prototype = {
     var editor = this;
     editor.ajax({
       "type"       : "post",
-      "dataType"   : "text",
       "data"       : editor.requestData(),
       "success"    : function(){
         editor.ajax({
-          "success" : function(data){ editor.loadSuccessCallback(data) }
+          "dataType" : 'json',
+          "success"  : function(data){ editor.loadSuccessCallback(data) }
         });
       }
     });
@@ -87,7 +87,6 @@ RestInPlaceEditor.prototype = {
   
   ajax : function(options) {
     options.url = this.url;
-    options.beforeSend = function(xhr){ xhr.setRequestHeader("Accept", "application/json"); };
     return jQuery.ajax(options);
   },
 
@@ -110,7 +109,7 @@ RestInPlaceEditor.forms = {
   "input" : {
     /* is bound to the editor and called to replace the element's content with a form for editing data */
     activateForm : function() {
-      this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + this.oldValue + '"></form>');
+      this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + $.trim(this.oldValue) + '"></form>');
       this.element.find('input')[0].select();
       this.element.find("form")
         .bind('submit', {editor: this}, RestInPlaceEditor.forms.input.submitHandler);
@@ -135,7 +134,7 @@ RestInPlaceEditor.forms = {
   "textarea" : {
     /* is bound to the editor and called to replace the element's content with a form for editing data */
     activateForm : function() {
-      this.element.html('<form action="javascript:void(0)" style="display:inline;"><textarea>' + this.oldValue + '</textarea></form>');
+      this.element.html('<form action="javascript:void(0)" style="display:inline;"><textarea>' + $.trim(this.oldValue) + '</textarea></form>');
       this.element.find('textarea')[0].select();
       this.element.find("textarea")
         .bind('blur', {editor: this}, RestInPlaceEditor.forms.textarea.blurHandler);
