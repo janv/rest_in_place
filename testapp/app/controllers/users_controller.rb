@@ -21,7 +21,7 @@ class UsersController < ApplicationController
     if @user.update_attributes!(params[:user])
       flash[:notice] = 'Person was successfully updated.'
       respond_to do |format|
-        format.html { redirect_to( @person )  }
+        format.html { redirect_to( @user )  }
         format.json { render :nothing =>  true }
       end
     else
