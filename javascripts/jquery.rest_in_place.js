@@ -10,7 +10,8 @@ RestInPlaceEditor.prototype = {
   // Public Interface Functions //////////////////////////////////////////////
   
   activate : function() {
-    this.oldValue = this.element.html();    
+    this.oldValue = this.element.html();
+    this.element.addClass('active');
     this.element.unbind('click', this.clickHandler)
     this.activateForm();
   },
@@ -18,6 +19,7 @@ RestInPlaceEditor.prototype = {
   abort : function() {
     this.element
       .html(this.oldValue)
+      .removeClass('active')
       .bind('click', {editor: this}, this.clickHandler);
   },
   
@@ -31,6 +33,7 @@ RestInPlaceEditor.prototype = {
           "dataType" : 'json',
           "success"  : function(data){ editor.loadSuccessCallback(data) }
         });
+        editor.element.removeClass('active');
       }
     });
     editor.element.html("saving...");
