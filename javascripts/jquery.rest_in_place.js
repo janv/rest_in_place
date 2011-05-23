@@ -11,7 +11,7 @@ RestInPlaceEditor.prototype = {
   
   activate : function() {
     this.oldValue = this.element.html();
-    this.element.addClass('riv-active');
+    this.element.addClass('rip-active');
     this.element.unbind('click', this.clickHandler)
     this.activateForm();
   },
@@ -19,7 +19,7 @@ RestInPlaceEditor.prototype = {
   abort : function() {
     this.element
       .html(this.oldValue)
-      .removeClass('riv-active')
+      .removeClass('rip-active')
       .bind('click', {editor: this}, this.clickHandler);
   },
   
@@ -33,7 +33,7 @@ RestInPlaceEditor.prototype = {
           "dataType" : 'json',
           "success"  : function(data){ editor.loadSuccessCallback(data) }
         });
-        editor.element.removeClass('riv-active');
+        editor.element.removeClass('rip-active');
       }
     });
     editor.element.html("saving...");
