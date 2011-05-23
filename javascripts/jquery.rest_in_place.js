@@ -102,7 +102,7 @@ RestInPlaceEditor.prototype = {
   clickHandler : function(event) {
     event.data.editor.activate();
   }
-}
+};
 
 
 RestInPlaceEditor.forms = {
@@ -149,11 +149,11 @@ RestInPlaceEditor.forms = {
     }
 
   }
-}
+};
 
 jQuery.fn.rest_in_place = function() {
   this.each(function(){
     jQuery(this).data('restInPlaceEditor', new RestInPlaceEditor(this));
   })
   return this;
-}
+};
