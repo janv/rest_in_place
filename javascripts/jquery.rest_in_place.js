@@ -10,7 +10,8 @@ RestInPlaceEditor.prototype = {
   // Public Interface Functions //////////////////////////////////////////////
   
   activate : function() {
-    this.oldValue = this.element.html();    
+    this.oldValue = this.element.html();
+    this.element.addClass('rip-active');
     this.element.unbind('click', this.clickHandler)
     this.activateForm();
   },
@@ -18,6 +19,7 @@ RestInPlaceEditor.prototype = {
   abort : function() {
     this.element
       .html(this.oldValue)
+      .removeClass('rip-active')
       .bind('click', {editor: this}, this.clickHandler);
   },
   
@@ -31,6 +33,7 @@ RestInPlaceEditor.prototype = {
           "dataType" : 'json',
           "success"  : function(data){ editor.loadSuccessCallback(data) }
         });
+        editor.element.removeClass('rip-active');
       }
     });
     editor.element.html("saving...");
@@ -102,14 +105,14 @@ RestInPlaceEditor.prototype = {
   clickHandler : function(event) {
     event.data.editor.activate();
   }
-}
+};
 
 
 RestInPlaceEditor.forms = {
   "input" : {
     /* is bound to the editor and called to replace the element's content with a form for editing data */
     activateForm : function() {
-      this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + $.trim(this.oldValue) + '"></form>');
+      this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + jQuery.trim(this.oldValue) + '"></form>');
       this.element.find('input')[0].select();
       this.element.find("form")
         .bind('submit', {editor: this}, RestInPlaceEditor.forms.input.submitHandler);
@@ -134,7 +137,7 @@ RestInPlaceEditor.forms = {
   "textarea" : {
     /* is bound to the editor and called to replace the element's content with a form for editing data */
     activateForm : function() {
-      this.element.html('<form action="javascript:void(0)" style="display:inline;"><textarea>' + $.trim(this.oldValue) + '</textarea></form>');
+      this.element.html('<form action="javascript:void(0)" style="display:inline;"><textarea>' + jQuery.trim(this.oldValue) + '</textarea></form>');
       this.element.find('textarea')[0].select();
       this.element.find("textarea")
         .bind('blur', {editor: this}, RestInPlaceEditor.forms.textarea.blurHandler);
@@ -149,11 +152,11 @@ RestInPlaceEditor.forms = {
     }
 
   }
-}
+};
 
 jQuery.fn.rest_in_place = function() {
   this.each(function(){
     jQuery(this).data('restInPlaceEditor', new RestInPlaceEditor(this));
   })
   return this;
-}
+};
