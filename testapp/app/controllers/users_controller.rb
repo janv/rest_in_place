@@ -22,7 +22,7 @@ class UsersController < ApplicationController
       flash[:notice] = 'Person was successfully updated.'
       respond_to do |format|
         format.html { redirect_to( @user )  }
-        format.json { render :nothing =>  true }
+        format.json { render :json => @user }
       end
     else
       respond_to do |format|

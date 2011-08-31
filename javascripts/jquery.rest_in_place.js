@@ -27,13 +27,27 @@ RestInPlaceEditor.prototype = {
     var editor = this;
     editor.ajax({
       "type"       : "post",
+      "dataType"   : "json",
       "data"       : editor.requestData(),
-      "success"    : function(){
-        editor.ajax({
-          "dataType" : 'json',
-          "success"  : function(data){ editor.loadSuccessCallback(data) }
-        });
-        editor.element.removeClass('rip-active');
+      "error"      : function(response) {
+        if (response.status == 100 && response.statusText == "parsererror") {
+          editor.ajax({
+            "dataType" : 'json',
+            "success"  : function(data){ editor.loadSuccessCallback(data) }
+          });
+        } else {
+          editor.abort();
+        }
+      },
+      "success"    : function(data){
+        if (data) {
+          editor.loadSuccessCallback(data)
+        } else {
+          editor.ajax({
+            "dataType" : 'json',
+            "success"  : function(data){ editor.loadSuccessCallback(data) }
+          });
+        }
       }
     });
     editor.element.html("saving...");
@@ -99,7 +113,8 @@ RestInPlaceEditor.prototype = {
     //jq14: data as JS object, not string.
     if (jQuery.fn.jquery < "1.4") data = eval('(' + data + ')' );
     this.element.html(data[this.objectName][this.attributeName]);
-    this.element.bind('click', {editor: this}, this.clickHandler);    
+    this.element.bind('click', {editor: this}, this.clickHandler);
+    this.element.removeClass('rip-active');
   },
   
   clickHandler : function(event) {
