@@ -19,6 +19,9 @@ The editor works by PUTting the updated value to the server and GETting the
 updated record afterwards to display the updated value.
 That way any authentication methods or otherwise funky workflows in your
 controllers are used for the inplace-editors requests.
+To save the additional GET request, you can take the shortcut of returning the
+updated record in the response to the PUT request. See the testapp for an
+example.
 
 URL:         <http://github.com/janv/rest_in_place/>  
 REPOSITORY:  git://github.com/janv/rest_in_place.git
@@ -119,8 +122,6 @@ follows:
     
     To write your own form types, just extend the `RestInPlace.forms` object
     and select your new form type throught the `data-formtype` attribute.
-    
-    **This feature is only supported in the jQuery version.**
 
 Example
 =======
@@ -145,7 +146,7 @@ Your app/controllers/users_controller.rb:
         if @user.update_attributes!(params[:user])
           respond_to do |format|
             format.html { redirect_to( @person )  }
-            format.json { render :nothing =>  true }
+            format.json { render :json => @user }
           end
         else
           respond_to do |format|
@@ -211,12 +212,6 @@ bug in the tracker at github: <http://github.com/janv/rest_in_place/issues>
 For general comments and questions, please use the comment function on my blog:
 <http://jan.varwig.org/projects/rest-in-place>
 
-Acknowledgements
-================
 
-Thanks to Kevin Valdek for the mootools version (commit 086b409d38932426540f402bb642c66165c78976)
-and improvements to the testapp (commit 8eb121271345943588fe2a8467c790e7e37f3d7a).
-
-Thanks to nando for commit 17ca4e3060a1420bf13d9b9d89ceeba2bcc144d2
-
+---
 Copyright (c) 2010 [Jan Varwig], released under the MIT license
