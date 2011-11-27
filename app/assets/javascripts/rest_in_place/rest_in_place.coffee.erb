@@ -1,0 +1,161 @@
+$ = jQuery
+
+# Detect Rails Settings
+include_root_in_json = "<%= ActiveRecord::Base.include_root_in_json %>" == "true"
+
+
+class RestInPlaceEditor
+  constructor : (e) ->
+    @$element = $(e)
+    @initOptions()
+    @bindForm()
+    
+    @$element.bind('click', editor: this, @clickHandler)
+  
+  # Public interface functions ###############################################
+    
+  activate : ->
+    @oldValue = @$element.html()
+    @$element.addClass('rip-active')
+    @$element.unbind('click', @clickHandler)
+    @activateForm()
+  
+  abort : ->
+    @$element
+      .html(@oldValue)
+      .removeClass('rip-active')
+      .bind('click', editor: this, @clickHandler)
+  
+  update : ->
+    @ajax
+      "type"       : "post"
+      "dataType"   : "json"
+      "data"       : @requestData()
+      "error"      : (response) => 
+        if (response.status == 100 && response.statusText == "parsererror")
+          @ajax
+            "dataType" : 'json'
+            "success"  : (data) => @loadSuccessCallback(data)
+        else
+          @abort()
+      "success"    : (data) =>
+        if data 
+          @loadSuccessCallback(data)
+        else
+          @ajax
+            "dataType" : 'json'
+            "success"  : (data) => @loadSuccessCallback(data)
+    @$element.html("saving...")
+  
+  # is bound to the editor and called to replace the element's content with a form for editing data
+  activateForm : ->
+    alert("The form was not properly initialized. activateForm is unbound")
+  
+  # Helper Functions #########################################################
+  
+  initOptions : ->
+    # Try parent supplied info
+    @$element.parents().each (index, parent) =>
+      @url           = @url           || $(parent).attr("data-url")
+      @formType      = @formType      || $(parent).attr("data-formtype")
+      @objectName    = @objectName    || $(parent).attr("data-object")
+      @attributeName = @attributeName || $(parent).attr("data-attribute")
+
+    # Try Rails-id based if parents did not explicitly supply something
+    @$element.parents().each (index, parent) =>
+      @objectName = @objectName || res[1] if res = parent.id.match(/^(\w+)_(\d+)$/i)
+
+    # Load own attributes (overrides all others)
+    @url           = @$element.attr("data-url")       || @url      || document.location.pathname
+    @formType      = @$element.attr("data-formtype")  || @formtype || "input"
+    @objectName    = @$element.attr("data-object")    || @objectName
+    @attributeName = @$element.attr("data-attribute") || @attributeName
+    
+  
+  bindForm : ->
+    @activateForm = RestInPlaceEditor.forms[@formType].activateForm
+    @getValue     = RestInPlaceEditor.forms[@formType].getValue
+    
+  getValue : ->
+    alert("The form was not properly initialized. getValue is unbound")
+  
+  # Generate the data sent in the POST request
+  requestData : ->
+    data = "_method=put"
+    data += "&#{@objectName}[#{@attributeName}]=#{encodeURIComponent(@getValue())}"
+    data += @getEncodedTokenAuthentication()
+    data
+  
+  getEncodedTokenAuthentication : ->
+    param = $('meta[name=csrf-param]').attr('content')
+    token = $('meta[name=csrf-token]').attr('content')
+    if param && token 
+      param = encodeURIComponent(param)
+      token = encodeURIComponent(token)
+      "&#{param}=#{token}"
+    else
+      ""
+
+  ajax : (options) ->
+    options.url = @url
+    $.ajax(options)
+
+  extractAttributeFromData : (data) ->
+    if include_root_in_json
+      data[@objectName][@attributeName]
+    else
+      data[@attributeName]      
+  
+  # Handlers #################################################################
+  
+  loadSuccessCallback : (data) ->
+    @$element.html(@extractAttributeFromData(data))
+    @$element.bind('click', editor: this, this.clickHandler)
+    @$element.removeClass('rip-active')
+  
+  clickHandler : (event) ->
+    event.data.editor.activate()
+
+RestInPlaceEditor.forms = 
+  "input" :
+    activateForm : ->
+      @$element.html("""<form action="javascript:void(0)" style="display:inline;"><input type="text" value="#{$.trim(@oldValue)}"></form>""")
+      @$element.find('input')[0].select()
+      @$element.find("form").bind 'submit'
+        editor: this
+        RestInPlaceEditor.forms.input.submitHandler
+      @$element.find("input").bind 'blur'
+        editor: this
+        RestInPlaceEditor.forms.input.inputBlurHandler
+    
+    getValue : ->
+      @$element.find("input").val()
+
+    inputBlurHandler : (event) ->
+      event.data.editor.abort()
+
+    submitHandler : (event) ->
+      event.data.editor.update()
+      return false
+  
+  "textarea" :
+    activateForm : ->
+      @$element.html("""<form action="javascript:void(0)" style="display:inline;"><textarea>#{$.trim(@oldValue)}</textarea></form>""")
+      @$element.find('textarea')[0].select()
+      @$element.find("textarea").bind 'blur'
+        editor: this
+        RestInPlaceEditor.forms.textarea.blurHandler
+
+    getValue : ->
+      @$element.find("textarea").val()
+
+    blurHandler : (event) ->
+      event.data.editor.update()
+
+window.RestInPlaceEditor = RestInPlaceEditor
+        
+
+$.fn.rest_in_place = ->
+  @each ->
+    $(this).data('restInPlaceEditor', new RestInPlaceEditor(this))
+  return this
