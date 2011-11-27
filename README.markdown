@@ -33,16 +33,25 @@ If you like REST in Place, you can flattr me: <a href="http://flattr.com/thing/1
 Requirements
 ============
 
-JavaScript
-----------
+JavaScript only
+---------------
 
-The JavaScript code (`app/assets/javascripts/rest_in_place/rest_in_place.js.erb`)
+If you're still using JavaScript, give [CoffeeScript](http://jashkenas.github.com/coffee-script/)
+a try. It's a preprocessor/different syntax, that makes writing JavaScript
+bearable. If you absolutely don't want to learn anything new, just convert
+REST in Place to JavaScript using http://js2coffee.org/ before including it in
+your project.
+
+CoffeeScript
+------------
+
+The CoffeeScript code (`app/assets/javascripts/rest_in_place/rest_in_place.coffee.erb`)
 only relies on the presence of jQuery. You can extract just that file and use
 it with whatever framework in whatever server-side language you want, given
 that you follow the coventions described later in this document.
 
-Even though this is processed by ERB, you can use it as a JavaScript file
-without modification.
+Even though this is processed by ERB to sniff out some relevant Rails settings,
+you can use it as a CoffeeScript file without modification.
 
 Rails
 -----
@@ -61,7 +70,7 @@ Installation
 
 Just add
 
-  gem 'rest_in_place'
+    gem 'rest_in_place'
 
 to your Gemfile.
 
@@ -69,19 +78,17 @@ Then load the JavaScript by adding <%= javascript_include_tag "rest_in_place" %>
 into your layout. Alternatively you can require 'rest_in_place' in your
 JavaScript files in `app/assets`, for example in your application.js:
 
-  //= require 'rest_in_place'
+    //= require 'rest_in_place'
 
 In both cases, make sure you load REST in Place __after__ jQuery.
 
 Rails Request forgery Protection
 ================================
 
-For REST in Place to work with Rails request forgery protection, place the
-following lines into your applications layout:
+For REST in Place to work with Rails request forgery protection, you need to
+have the Rails CSRF meta tags in your HTML head:
 
-    <script type="text/javascript">
-      rails_authenticity_token = '<%= form_authenticity_token %>'
-    </script>
+    <%= csrf_meta_tags %>
 
 Usage Instructions
 ==================
@@ -138,7 +145,7 @@ Example
 
 Your routes.rb:
 
-    map.resources :users
+    resources :users
   
 Your app/controllers/users_controller.rb:
 
@@ -155,7 +162,7 @@ Your app/controllers/users_controller.rb:
         @user = User.find params[:id]
         if @user.update_attributes!(params[:user])
           respond_to do |format|
-            format.html { redirect_to( @person )  }
+            format.html { redirect_to( @person )}
             format.json { render :json => @user }
           end
         else
@@ -169,31 +176,18 @@ Your app/controllers/users_controller.rb:
 
 Your app/views/users/show.html.erb:
 
-    <html>
-    <head>
-      <%= javascript_include_tag "jquery-1.4.min" , "jquery.rest_in_place" %>
-      <script type="text/javascript">
-        rails_authenticity_token = '<%= form_authenticity_token %>'
-        jQuery(function(){
-          jQuery(".rest_in_place").rest_in_place();
-        });
-      </script>
-    </head>
-    <body>
-      <div id="<%= dom_id @user %>">
-        ID: <%= @user.id %><br />
-        Name: <span class="rest_in_place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
-        Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
-      </div>
-    </body> 
-    </html>
+    <div id="<%= dom_id @user %>">
+      ID: <%= @user.id %><br />
+      Name: <span class="rest_in_place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
+      Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
+    </div>
 
 You can run this example by running to the testapp included in this
 plugin with script/server (sqlite3 required) and visiting
 localhost:3000/users/
 
 Hint:  
-you need to set up the database first.
+you might need to set up the database first.
 Copy and edit `testapp/config/database.yml.sample` accordingly.
 If you don't want to use the included sqlite3 database, run `rake db:create`
 and `rake db:schema:load`.
@@ -224,4 +218,4 @@ For general comments and questions, please use the comment function on my blog:
 
 
 ---
-Copyright (c) 2010 [Jan Varwig], released under the MIT license
+Copyright (c) 2011 [Jan Varwig], released under the MIT license
