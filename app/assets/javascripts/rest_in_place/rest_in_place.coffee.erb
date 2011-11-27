@@ -1,31 +1,36 @@
-$ = jQuery
-
-# Detect Rails Settings
-include_root_in_json = "<%= ActiveRecord::Base.include_root_in_json %>" == "true"
-
-
+# # REST in Place Editor #####################################################
+#
+# This is the main class that manages the manipulation of the DOM and the AJAX
+# requests
 class RestInPlaceEditor
   constructor : (e) ->
     @$element = $(e)
     @initOptions()
     @bindForm()
+    @createClickHandler()
     
-    @$element.bind('click', editor: this, @clickHandler)
+    @$element.click(@clickHandler)
   
-  # Public interface functions ###############################################
-    
+  # ## Public interface functions ############################################
+  
+  # Toggle the element associated with this editor from normal to a form field  
   activate : ->
     @oldValue = @$element.html()
     @$element.addClass('rip-active')
     @$element.unbind('click', @clickHandler)
     @activateForm()
   
+  # Restore the element to its default state
   abort : ->
     @$element
       .html(@oldValue)
       .removeClass('rip-active')
-      .bind('click', editor: this, @clickHandler)
+      .click(@clickHandler)
   
+  # Take the changes a user has made and send them to the server.
+  # If the server accepted the request but does not send back a
+  # parseable answer, a second request is initiated to retrieve the updated
+  # value via GET
   update : ->
     @ajax
       "type"       : "post"
@@ -47,114 +52,154 @@ class RestInPlaceEditor
             "success"  : (data) => @loadSuccessCallback(data)
     @$element.html("saving...")
   
-  # is bound to the editor and called to replace the element's content with a form for editing data
+  # ## Implementation Methods
+  #
+  # These are not implemented in RestInPlaceEditor. Instead, different form
+  # types implement this method (and some others). See [Forms](#forms)
+  
+  # Turns the elements HTML into a form. 
   activateForm : ->
     alert("The form was not properly initialized. activateForm is unbound")
   
-  # Helper Functions #########################################################
-  
+  # When the element is active (it is a form), thtis method returns the value
+  # that should be sent to the server.
+  getValue : ->
+    alert("The form was not properly initialized. getValue is unbound")
+
+  # ## Helper Functions ######################################################
+
+  # Derives configuration options from different sources:
+  #
+  # 1. Look through the chain of parent elements and search for data attributes
+  # 2. Try to guess the object name based on Rails id naming conventions if
+  #    parents did not explicitly supply something
+  # 3. Take own data attributes, these always override other settings.
+  #
+  # These are the options:
+  #
+  # **data-url / @url**  
+  # Where to send/receive data from
+  #
+  # **data-formtype / @formType**  
+  # Which form extension to use (see [Forms](#forms))
+  #
+  # **data-object / @objectName**  
+  # Rails singular lowercase name of the class of the objects. This is used
+  # to generate requests/parse responses that ActionController can understand.
+  #
+  # **data-attributes / @attributeName**  
+  # Name of the attribute on the object. Combined with the object name to build
+  # query string parameters in the form `object[attribute]`, just as Rails
+  # expects it.
   initOptions : ->
-    # Try parent supplied info
     @$element.parents().each (index, parent) =>
       @url           = @url           || $(parent).attr("data-url")
       @formType      = @formType      || $(parent).attr("data-formtype")
       @objectName    = @objectName    || $(parent).attr("data-object")
       @attributeName = @attributeName || $(parent).attr("data-attribute")
 
-    # Try Rails-id based if parents did not explicitly supply something
     @$element.parents().each (index, parent) =>
       @objectName = @objectName || res[1] if res = parent.id.match(/^(\w+)_(\d+)$/i)
 
-    # Load own attributes (overrides all others)
     @url           = @$element.attr("data-url")       || @url      || document.location.pathname
     @formType      = @$element.attr("data-formtype")  || @formtype || "input"
     @objectName    = @$element.attr("data-object")    || @objectName
     @attributeName = @$element.attr("data-attribute") || @attributeName
     
-  
+  # Overwrites formtype specific method implementations during initialization
   bindForm : ->
     @activateForm = RestInPlaceEditor.forms[@formType].activateForm
     @getValue     = RestInPlaceEditor.forms[@formType].getValue
-    
-  getValue : ->
-    alert("The form was not properly initialized. getValue is unbound")
   
-  # Generate the data sent in the POST request
+  # Generate the data that is sent in the POST request
   requestData : ->
-    data = "_method=put"
-    data += "&#{@objectName}[#{@attributeName}]=#{encodeURIComponent(@getValue())}"
-    data += @getEncodedTokenAuthentication()
+    data = @getEncodedTokenAuthenticationParams()
+    data["_method"] = 'put'
+    data["#{@objectName}[#{@attributeName}]"] = @getValue()
     data
   
-  getEncodedTokenAuthentication : ->
+  # Extract CSRF token from metatags
+  getEncodedTokenAuthenticationParams : ->
+    data = {}
     param = $('meta[name=csrf-param]').attr('content')
     token = $('meta[name=csrf-token]').attr('content')
-    if param && token 
-      param = encodeURIComponent(param)
-      token = encodeURIComponent(token)
-      "&#{param}=#{token}"
-    else
-      ""
+    data[param] = token if param && token 
+    data
 
+  # A wrapper for jQuery.ajax
   ajax : (options) ->
     options.url = @url
     $.ajax(options)
 
+  # Extract the actual attribute value from the servers response
   extractAttributeFromData : (data) ->
     if include_root_in_json
       data[@objectName][@attributeName]
     else
       data[@attributeName]      
   
-  # Handlers #################################################################
+  # ## Handlers ##############################################################
   
+  # Handles the successful response from the server
   loadSuccessCallback : (data) ->
     @$element.html(@extractAttributeFromData(data))
-    @$element.bind('click', editor: this, this.clickHandler)
+    @$element.click(@clickHandler)
     @$element.removeClass('rip-active')
   
-  clickHandler : (event) ->
-    event.data.editor.activate()
+  # Creates a clickhandler for the current instance of RestInPlaceEditor, that
+  # has its this pointer permanently bound to the editor instance.
+  createClickHandler : ->
+    @clickHandler = (event) => @activate()
 
+# # <a name="forms">Forms</forms>
+#
+# Contains form type implementations. A form type implementation needs to
+# provide two methods, `activateForm` and `getValue`, which are transplanted
+# into the RestInPlaceEditor instance.
+#
+# `activateForm` : Turns the elements HTML into a form.  
+# `getValue` : When the element is active (it is a form), this method returns
+#              the value that should be sent to the server.
 RestInPlaceEditor.forms = 
   "input" :
     activateForm : ->
       @$element.html("""<form action="javascript:void(0)" style="display:inline;"><input type="text" value="#{$.trim(@oldValue)}"></form>""")
       @$element.find('input')[0].select()
-      @$element.find("form").bind 'submit'
-        editor: this
-        RestInPlaceEditor.forms.input.submitHandler
-      @$element.find("input").bind 'blur'
-        editor: this
-        RestInPlaceEditor.forms.input.inputBlurHandler
+      @$element.find("form").submit =>
+        @update()
+        false
+      @$element.find("input").blur => @abort()
     
     getValue : ->
       @$element.find("input").val()
-
-    inputBlurHandler : (event) ->
-      event.data.editor.abort()
-
-    submitHandler : (event) ->
-      event.data.editor.update()
-      return false
   
   "textarea" :
     activateForm : ->
       @$element.html("""<form action="javascript:void(0)" style="display:inline;"><textarea>#{$.trim(@oldValue)}</textarea></form>""")
       @$element.find('textarea')[0].select()
-      @$element.find("textarea").bind 'blur'
-        editor: this
-        RestInPlaceEditor.forms.textarea.blurHandler
+      @$element.find("textarea").blur => @update()
 
     getValue : ->
       @$element.find("textarea").val()
 
-    blurHandler : (event) ->
-      event.data.editor.update()
+# ------------------
+#
+# ### Support functionality
 
+# Assign jQuery shortcut
+$ = jQuery
+
+# Detect Rails Settings
+include_root_in_json = "<%= ActiveRecord::Base.include_root_in_json %>" == "true"
+
+# Install in global namespace
 window.RestInPlaceEditor = RestInPlaceEditor
-        
 
+# Create jQuery function
+# Use this to setup REST in Place functionality for elements of your page,
+# for example:
+#
+#     jQuery(".rest_in_place").rest_in_place();
 $.fn.rest_in_place = ->
   @each ->
     $(this).data('restInPlaceEditor', new RestInPlaceEditor(this))
