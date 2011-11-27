@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Testapp</title>
+  <%= stylesheet_link_tag    "application" %>
+  <%= javascript_include_tag "application" %>
+  <%= javascript_include_tag "rest_in_place" %>
+  <%= csrf_meta_tags %>
+
+  <style type="text/css" media="screen">
+    .rip-active {
+      padding:; 2px;
+      border: solid red;
+    }
+  </style>
+  <script type="text/javascript">
+    rails_authenticity_token = '<%= form_authenticity_token %>'
+    jQuery(function(){
+      jQuery(".rest_in_place").rest_in_place();
+      jQuery("body").prepend("<p>jQuery Version: " + jQuery.fn.jquery + "</p>")
+    });
+  </script>
+
+</head>
+<body>
+
+<%= yield %>
+
+</body>
+</html>

@@ -1,0 +1,193 @@
+function RestInPlaceEditor(e) {
+  this.element = jQuery(e);
+  this.initOptions();
+  this.bindForm();
+  
+  this.element.bind('click', {editor: this}, this.clickHandler);
+}
+
+RestInPlaceEditor.prototype = {
+  // Public Interface Functions //////////////////////////////////////////////
+  
+  activate : function() {
+    this.oldValue = this.element.html();
+    this.element.addClass('rip-active');
+    this.element.unbind('click', this.clickHandler)
+    this.activateForm();
+  },
+  
+  abort : function() {
+    this.element
+      .html(this.oldValue)
+      .removeClass('rip-active')
+      .bind('click', {editor: this}, this.clickHandler);
+  },
+  
+  update : function() {
+    var editor = this;
+    editor.ajax({
+      "type"       : "post",
+      "dataType"   : "json",
+      "data"       : editor.requestData(),
+      "error"      : function(response) {
+        if (response.status == 100 && response.statusText == "parsererror") {
+          editor.ajax({
+            "dataType" : 'json',
+            "success"  : function(data){ editor.loadSuccessCallback(data) }
+          });
+        } else {
+          editor.abort();
+        }
+      },
+      "success"    : function(data){
+        if (data) {
+          editor.loadSuccessCallback(data)
+        } else {
+          editor.ajax({
+            "dataType" : 'json',
+            "success"  : function(data){ editor.loadSuccessCallback(data) }
+          });
+        }
+      }
+    });
+    editor.element.html("saving...");
+  },
+  
+  activateForm : function() {
+    alert("The form was not properly initialized. activateForm is unbound");
+  },
+  
+  // Helper Functions ////////////////////////////////////////////////////////
+  
+  initOptions : function() {
+    // Try parent supplied info
+    var self = this;
+    self.element.parents().each(function(){
+      self.url           = self.url           || jQuery(this).attr("data-url");
+      self.formType      = self.formType      || jQuery(this).attr("data-formtype");
+      self.objectName    = self.objectName    || jQuery(this).attr("data-object");
+      self.attributeName = self.attributeName || jQuery(this).attr("data-attribute");
+    });
+    // Try Rails-id based if parents did not explicitly supply something
+    self.element.parents().each(function(){
+      var res;
+      if (res = this.id.match(/^(\w+)_(\d+)$/i)) {
+        self.objectName = self.objectName || res[1];
+      }
+    });
+    // Load own attributes (overrides all others)
+    self.url           = self.element.attr("data-url")       || self.url      || document.location.pathname;
+    self.formType      = self.element.attr("data-formtype")  || self.formtype || "input";
+    self.objectName    = self.element.attr("data-object")    || self.objectName;
+    self.attributeName = self.element.attr("data-attribute") || self.attributeName;
+  },
+  
+  bindForm : function() {
+    this.activateForm = RestInPlaceEditor.forms[this.formType].activateForm;
+    this.getValue     = RestInPlaceEditor.forms[this.formType].getValue;
+  },
+  
+  getValue : function() {
+    alert("The form was not properly initialized. getValue is unbound");    
+  },
+  
+  /* Generate the data sent in the POST request */
+  requestData : function() {
+    var data = "_method=put";
+    data += "&"+this.objectName+'['+this.attributeName+']='+encodeURIComponent(this.getValue());
+    data += this.getEncodedTokenAuthentication()
+    return data;
+  },
+  
+  getEncodedTokenAuthentication : function() {
+    var param = $('meta[name=csrf-param]').attr('content');
+    var token = $('meta[name=csrf-token]').attr('content');
+    if (param && token) {
+      param = encodeURIComponent(param);
+      token = encodeURIComponent(token);
+      return "&"+param+"="+token;
+    } else {
+      return "";
+    }
+  },
+  
+  ajax : function(options) {
+    options.url = this.url;
+    return jQuery.ajax(options);
+  },
+  
+  extractAttributeFromData : function(data) {
+    var include_root_in_json = "<%= ActiveRecord::Base.include_root_in_json %>";
+    if (include_root_in_json == "false") {
+      return data[this.attributeName];      
+    } else {
+      return data[this.objectName][this.attributeName];
+    }
+  },
+
+  // Handlers ////////////////////////////////////////////////////////////////
+  
+  loadSuccessCallback : function(data) {
+    this.element.html(this.extractAttributeFromData(data));
+    this.element.bind('click', {editor: this}, this.clickHandler);
+    this.element.removeClass('rip-active');
+  },
+  
+  clickHandler : function(event) {
+    event.data.editor.activate();
+  }
+};
+
+
+RestInPlaceEditor.forms = {
+  "input" : {
+    /* is bound to the editor and called to replace the element's content with a form for editing data */
+    activateForm : function() {
+      this.element.html('<form action="javascript:void(0)" style="display:inline;"><input type="text" value="' + jQuery.trim(this.oldValue) + '"></form>');
+      this.element.find('input')[0].select();
+      this.element.find("form")
+        .bind('submit', {editor: this}, RestInPlaceEditor.forms.input.submitHandler);
+      this.element.find("input")
+        .bind('blur',   {editor: this}, RestInPlaceEditor.forms.input.inputBlurHandler);
+    },
+    
+    getValue :  function() {
+      return this.element.find("input").val();
+    },
+
+    inputBlurHandler : function(event) {
+      event.data.editor.abort();
+    },
+
+    submitHandler : function(event) {
+      event.data.editor.update();
+      return false;
+    }
+  },
+
+  "textarea" : {
+    /* is bound to the editor and called to replace the element's content with a form for editing data */
+    activateForm : function() {
+      this.element.html('<form action="javascript:void(0)" style="display:inline;"><textarea>' + jQuery.trim(this.oldValue) + '</textarea></form>');
+      this.element.find('textarea')[0].select();
+      this.element.find("textarea")
+        .bind('blur', {editor: this}, RestInPlaceEditor.forms.textarea.blurHandler);
+    },
+    
+    getValue :  function() {
+      return this.element.find("textarea").val();
+    },
+
+    blurHandler : function(event) {
+      event.data.editor.update();
+    }
+
+  }
+};
+
+jQuery.fn.rest_in_place = function() {
+  this.each(function(){
+    jQuery(this).data('restInPlaceEditor', new RestInPlaceEditor(this));
+  })
+  return this;
+};

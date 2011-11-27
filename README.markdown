@@ -30,38 +30,48 @@ BLOG:        <http://jan.varwig.org/projects/rest-in-place>
 If you like REST in Place, you can flattr me: <a href="http://flattr.com/thing/1984/REST-in-Place" target="_blank">
 <img src="http://api.flattr.com/button/flattr-badge-large.png" alt="Flattr this" title="Flattr this" border="0" /></a>
 
+Requirements
+============
+
+JavaScript
+----------
+
+The JavaScript code (`app/assets/javascripts/rest_in_place/rest_in_place.js.erb`)
+only relies on the presence of jQuery. You can extract just that file and use
+it with whatever framework in whatever server-side language you want, given
+that you follow the coventions described later in this document.
+
+Even though this is processed by ERB, you can use it as a JavaScript file
+without modification.
+
+Rails
+-----
+
+Since I guess most people use REST in Place in Rails apps, I turned this
+entire thing into a gem that you can require in your Gemfile. It requires
+jQuery, but it will NOT install a `jquery-rails` dependency. This is done so
+you aren't forced to use `jquery-rails` if you want to run a more up-to-date
+version of jQuery. Just make sure that jQuery is there.
+
+REST in Place requires Rails >= 3.1 as a dependency since it loads through the
+asset pipeline.
+
 Installation
 ============
 
-First, install REST in Place with
+Just add
 
-    script/plugin install git://github.com/janv/rest_in_place.git
+  gem 'rest_in_place'
 
-To use it, include `jquery.rest_in_place.js` in your template and execute the
-following in your document's onLoad handler:
+to your Gemfile.
 
-    jQuery(".rest_in_place").rest_in_place();
+Then load the JavaScript by adding <%= javascript_include_tag "rest_in_place" %>
+into your layout. Alternatively you can require 'rest_in_place' in your
+JavaScript files in `app/assets`, for example in your application.js:
 
+  //= require 'rest_in_place'
 
-Other JS Frameworks
-===================
-
-Besides the [jQuery][] version, this repository also includes a [mootools][]
-and a [Prototype][] version (`rest_in_place.js` and `mootols.rest_in_place.js`
-respectively).
-
-REST in Place originally was a mere proof of concept, written in jQuery and
-Prototype. I haven't touched it much in a while, but it apparently proved
-useful to a lot of people and I want to develop it more actively in the future.
-Unfortunately I never work with neither mootools nor Prototype, so I can only
-improve the jQuery version of the plugin.
-
-I will happily include contributions for the other versions, but I won't
-develop them on my own.
-
-[jQuery]: http://www.jquery.com/
-[mootools]: http://mootools.net/
-[Prototype]: http://www.prototypejs.org/
+In both cases, make sure you load REST in Place __after__ jQuery.
 
 Rails Request forgery Protection
 ================================

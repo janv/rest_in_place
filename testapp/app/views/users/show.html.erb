@@ -1,33 +1,11 @@
-<html>
-<style type="text/css" media="screen">
-  .rip-active {
-    padding:; 2px;
-    border: solid red;
-  }
-</style>
-<head>
-    <%= javascript_include_tag "jquery-1.6.2.min" , "jquery.rest_in_place" %>
-    <%#= javascript_include_tag "prototype" , "rest_in_place" %>
-    <%#= javascript_include_tag "mootools-121-core" , "mootools.rest_in_place" %>
-    <script type="text/javascript">
-      rails_authenticity_token = '<%= form_authenticity_token %>'
-      jQuery(function(){
-        jQuery(".rest_in_place").rest_in_place();
-        jQuery("body").prepend("<p>jQuery Version: " + jQuery.fn.jquery + "</p>")
-      });
-    </script>
-</head>
-<body>
-    <div id="<%= dom_id @user %>">
-      ID: <%= @user.id %><br />
-      Name: <span class="rest_in_place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
-      Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
-    </div>
+<div id="<%= dom_id @user %>">
+  ID: <%= @user.id %><br />
+  Name: <span class="rest_in_place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
+  Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
+</div>
 
-    <div id="<%= dom_id @user2 %>" data-url="<%= url_for(@user2) %>">
-      ID: <%= @user2.id %><br />
-      Name: <span class="rest_in_place" data-attribute="name"><%= @user2.name %></span><br/><br/>
-      Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user2.hobbies %></span>
-    </div>    
-</body> 
-</html>
+<div id="<%= dom_id @user2 %>" data-url="<%= url_for(@user2) %>">
+  ID: <%= @user2.id %><br />
+  Name: <span class="rest_in_place" data-attribute="name"><%= @user2.name %></span><br/><br/>
+  Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user2.hobbies %></span>
+</div>    
