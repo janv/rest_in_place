@@ -32,25 +32,27 @@ class RestInPlaceEditor
   # parseable answer, a second request is initiated to retrieve the updated
   # value via GET
   update : ->
-    @ajax
-      "type"       : "post"
-      "dataType"   : "json"
-      "data"       : @requestData()
-      "error"      : (response) => 
-        if (response.status == 100 && response.statusText == "parsererror")
-          @ajax
-            "dataType" : 'json'
-            "success"  : (data) => @loadSuccessCallback(data)
-        else
-          @abort()
-      "success"    : (data) =>
-        if data 
-          @loadSuccessCallback(data)
-        else
-          @ajax
-            "dataType" : 'json'
-            "success"  : (data) => @loadSuccessCallback(data)
+    updateRequest = @ajax
+      type : "post"
+      data : @requestData()
+      
+    updateRequest.fail (jqXHR, textStatus) =>
+      if (jqXHR.status == 200 && textStatus == "parsererror")
+        @loadViaGET()
+      else
+        @abort()
+        
+    updateRequest.done (data) =>
+      if data 
+        @loadSuccessCallback(data)
+      else
+        @loadViaGET()
+        
     @$element.html("saving...")
+  
+  loadViaGET : ->
+    showRequest = @ajax()
+    showRequest.done (data) => @loadSuccessCallback(data)
   
   # ## Implementation Methods
   #
@@ -127,8 +129,9 @@ class RestInPlaceEditor
     data
 
   # A wrapper for jQuery.ajax
-  ajax : (options) ->
-    options.url = @url
+  ajax : (options = {}) ->
+    options.url      = @url
+    options.dataType = "json"
     $.ajax(options)
 
   # Extract the actual attribute value from the servers response
