@@ -104,7 +104,7 @@ class RestInPlaceEditor
       @objectName = @objectName || res[1] if res = parent.id.match(/^(\w+)_(\d+)$/i)
 
     @url           = @$element.attr("data-url")       || @url      || document.location.pathname
-    @formType      = @$element.attr("data-formtype")  || @formtype || "input"
+    @formType      = @$element.attr("data-formtype")  || @formType || "input"
     @objectName    = @$element.attr("data-object")    || @objectName
     @attributeName = @$element.attr("data-attribute") || @attributeName
     
