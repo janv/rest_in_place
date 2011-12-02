@@ -1,11 +1,11 @@
 REST in Place
 ===========
-                                    _______
-                                   /       \
-                                   | R.I.P.|
-                                   |       |
-                                   |       |
-                                 -------------
+                                  _______
+                                 /       \
+                                 | R.I.P.|
+                                 |       |
+                                 |       |
+                               -------------
 
 REST in Place is an AJAX Inplace-Editor that talks to RESTful controllers.
 It requires absolutely no additional server-side code if your controller
@@ -19,6 +19,7 @@ The editor works by PUTting the updated value to the server and GETting the
 updated record afterwards to display the updated value.
 That way any authentication methods or otherwise funky workflows in your
 controllers are used for the inplace-editors requests.
+
 To save the additional GET request, you can take the shortcut of returning the
 updated record in the response to the PUT request. See the testapp for an
 example.
@@ -33,26 +34,6 @@ If you like REST in Place, you can flattr me: <a href="http://flattr.com/thing/1
 Requirements
 ============
 
-JavaScript only
----------------
-
-If you're still using JavaScript, give [CoffeeScript](http://jashkenas.github.com/coffee-script/)
-a try. It's a preprocessor/different syntax, that makes writing JavaScript
-bearable. If you absolutely don't want to learn anything new, just convert
-REST in Place to JavaScript using http://js2coffee.org/ before including it in
-your project.
-
-CoffeeScript
-------------
-
-The CoffeeScript code (`app/assets/javascripts/rest_in_place/rest_in_place.coffee.erb`)
-only relies on the presence of jQuery. You can extract just that file and use
-it with whatever framework in whatever server-side language you want, given
-that you follow the coventions described later in this document.
-
-Even though this is processed by ERB to sniff out some relevant Rails settings,
-you can use it as a CoffeeScript file without modification.
-
 Rails
 -----
 
@@ -64,6 +45,27 @@ version of jQuery. Just make sure that jQuery is there.
 
 REST in Place requires Rails >= 3.1 as a dependency since it loads through the
 asset pipeline.
+
+CoffeeScript
+------------
+
+The CoffeeScript code (`lib/assets/javascripts/rest_in_place/rest_in_place.coffee.erb`)
+only relies on the presence of jQuery. You can extract just that file and use
+it with whatever framework in whatever server-side language you want, given
+that you follow the coventions described later in this document.
+
+Even though this is processed by ERB to sniff out some relevant Rails settings,
+you can use it as a CoffeeScript file without modification. (This feature
+might vanish at any time in the future, tying RIP closer to Rails).
+
+JavaScript only
+---------------
+
+If you're still using JavaScript, give [CoffeeScript](http://jashkenas.github.com/coffee-script/)
+a try. It's a preprocessor/different syntax, that makes writing JavaScript
+bearable. If you absolutely don't want to learn anything new, just convert
+REST in Place to JavaScript using http://js2coffee.org/ before including it in
+your project.
 
 Installation
 ============
@@ -199,22 +201,30 @@ REST in Place is very picky about correct headers and formatting.
 If you experience errors, please make sure your controller sends responses as
 properly formatted JSON with the correct MIME-Type "application/json".
 
-Non-Rails
-=========
+Testing
+=======
 
-REST in Place was written for Ruby on Rails but is usable with any kind of
-RESTful web api. You should be able to adapt the instructions above to your
-framework easily.
+The repository contains a `testapp` directory with a rails app that can be
+used to test REST in Place. Just head to `http://localhost:3000` to see it in
+action.
+
+There's also an automated Jasmine spec suite running at
+`http://localhost:3000/jasmine`. You can find the sources for the specs at
+`testapp/app/assets/javascripts/spec.coffee`
 
 Participation
 =============
 
-I'd love to get comments, bug reports (or better, patches) about REST in Place.
-For this, you can either fork the project and send a pull request, or submit a
-bug in the tracker at github: <http://github.com/janv/rest_in_place/issues>
+I'd love to get comments, bug reports (or better, pull-requests) about REST in
+Place. For this, you can either fork the project to send a pull request, or
+submit a bug in the tracker at github:
+<http://github.com/janv/rest_in_place/issues>
 
 For general comments and questions, please use the comment function on my blog:
 <http://jan.varwig.org/projects/rest-in-place>
+
+If you send pull requests be sure to also add tests and make sure the existing
+tests pass.
 
 
 ---
