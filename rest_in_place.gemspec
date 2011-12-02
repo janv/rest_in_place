@@ -13,7 +13,7 @@ Gem::Specification.new do |s|
   s.description = %q{REST in Place is an AJAX Inplace-Editor that talks to RESTful controllers.}
   s.license     = "MIT"
 
-  s.files       = Dir["Gemfile", "MIT-LICENSE", "README.markdown", "rest_in_place.gemspec", "app/**/*", "lib/**/*"]
+  s.files       = Dir["Gemfile", "MIT-LICENSE", "README.markdown", "rest_in_place.gemspec", "lib/**/*"]
 
   s.require_paths = ["lib"]
   s.add_dependency('rails', '>= 3.1')
