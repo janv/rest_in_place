@@ -48,6 +48,116 @@ describe "Setup", ->
       expect(rip.objectName).toEqual('person2')
       expect(rip.attributeName).toEqual('name2')
     
-xdescribe "Server communication"
-xdescribe "Forms"
-xdescribe "User Interaction"
+describe "Server communication", ->
+  beforeEach ->
+    rip = makeRip '<p><span data-object="person" data-attribute="age">Blubb</span></p>'
+
+  describe "when processing the response from the server", ->
+
+    it "should not include_root_in_json by defafult", ->
+      expect(rip.include_root_in_json).toBe(false)
+
+    it "should unwrap the object if include_root_in_json is set", ->
+      rip.include_root_in_json = true
+      expect(rip.extractAttributeFromData(person : {age:10})).toEqual(10)
+
+    it "should directly access the attribute if include_root_in_json is not set", ->
+      rip.include_root_in_json = false
+      expect(rip.extractAttributeFromData(age:12)).toEqual(12)
+  
+  describe "when sending the update", ->
+    csrf_metatags = null
+    
+    beforeEach ->
+      spyOn(rip, 'getValue').andReturn(111)
+      csrf_metatags = $('meta[name=csrf-param], meta[name=csrf-token]')
+      csrf_metatags.remove()     
+    
+    afterEach ->
+      csrf_metatags.appendTo($('head'))
+
+    it "should include the data", ->
+      expect(rip.requestData()['person[age]']).toEqual(111)
+
+    it "should include rails csrf stuff if its in the HTML", ->
+      $('head').append """
+        <meta content="test_authenticity_token" name="csrf-param" />
+        <meta content="123456" name="csrf-token" />
+      """
+      expect(rip.requestData()['test_authenticity_token']).toEqual('123456')
+
+    it "should not include rails csrf stuff if its not in the HTML", ->
+      expect(rip.requestData()['authenticity_token']).toBeUndefined()
+  
+  describe "after updating", ->
+    jqXHR = null
+    beforeEach ->
+      jqXHR = new $.Deferred()
+      spyOn(rip, 'ajax').andCallFake (options = {}) ->
+        options.url      = @url
+        options.dataType = "json"
+        jqXHR
+        
+    describe "when receiving an empty body", ->
+      beforeEach ->
+        spyOn(rip, 'loadViaGET')
+        rip.update()
+
+      it "should load via get", ->
+        jqXHR.resolve()
+        expect(rip.loadViaGET).toHaveBeenCalled()
+      
+    describe "when receiving a body with data", ->
+      response = age : 12
+      beforeEach ->
+        spyOn(rip, 'loadSuccessCallback')
+        rip.update(response)
+
+      it "should load the success callback", ->
+        jqXHR.resolve(response)
+        expect(rip.loadSuccessCallback).toHaveBeenCalledWith(response)
+      
+    describe "when receiving unparseable data", ->
+      beforeEach ->
+        spyOn(rip, 'loadViaGET')
+        rip.update()
+
+      it "should load via get", ->
+        jqXHR.status = 200
+        jqXHR.reject(jqXHR, 'parsererror')
+        expect(rip.loadViaGET).toHaveBeenCalled()
+      
+    describe "when receiving any other error", ->
+      beforeEach ->
+        spyOn(rip, 'abort')
+        rip.update()
+
+      it "should abort", ->
+        jqXHR.status = 500
+        jqXHR.reject(jqXHR)
+        expect(rip.abort).toHaveBeenCalled()
+      
+  
+describe "User Interaction", ->
+  beforeEach ->
+    rip = makeRip '<p><span data-object="person" data-attribute="age">Blubb</span></p>'
+  
+  describe "when clicked", ->
+    it "should be turned rip-active", ->
+      rip.$element.click()
+      expect(rip.$element.hasClass('rip-active')).toBe(true)
+    
+    it "should call activate", ->
+      spyOn(rip, 'activate')
+      rip.$element.click()
+      expect(rip.activate).toHaveBeenCalled()
+    
+    xit "should remove the click handler"
+      
+  describe "when aborting", ->
+    beforeEach ->
+      rip.activate()
+
+    it "should remove rip-active", ->
+      rip.abort()
+      expect(rip.$element.hasClass('rip-active')).toBe(false)
