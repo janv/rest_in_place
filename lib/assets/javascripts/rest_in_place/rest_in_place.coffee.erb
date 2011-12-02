@@ -202,8 +202,12 @@ window.RestInPlaceEditor = RestInPlaceEditor
 # Use this to setup REST in Place functionality for elements of your page,
 # for example:
 #
-#     jQuery(".rest_in_place").rest_in_place();
-$.fn.rest_in_place = ->
+#     jQuery(".rest-in-place").restInPlace();
+$.fn.restInPlace = ->
   @each ->
     $(this).data('restInPlaceEditor', new RestInPlaceEditor(this))
   return this
+
+
+# Run automatically
+$ -> $('.rest-in-place').restInPlace()

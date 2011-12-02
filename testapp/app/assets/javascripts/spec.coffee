@@ -2,7 +2,7 @@ rip = null
 makeRip = (html) ->
   $(html)
     .find('span')
-    .rest_in_place()
+    .restInPlace()
     .data('restInPlaceEditor')
 
 beforeEach -> rip = null
@@ -161,3 +161,16 @@ describe "User Interaction", ->
     it "should remove rip-active", ->
       rip.abort()
       expect(rip.$element.hasClass('rip-active')).toBe(false)
+
+describe "jQuery Interface", ->
+
+  it "should automatically convert elements with class rest-in-place", ->
+    rip = $('#autoload-sample').data('restInPlaceEditor')
+    expect(typeof rip.activate).toEqual("function")
+        
+  it "should convert jQuery objects with the restInPlace() function ", ->
+    rip = $('<p><span data-object="person" data-attribute="age">Blubb</span></p>')
+      .find('span')
+      .restInPlace()
+      .data('restInPlaceEditor')
+    expect(typeof rip.activate).toEqual("function")

@@ -1,11 +1,11 @@
 <div id="<%= dom_id @user %>">
   ID: <%= @user.id %><br />
-  Name: <span class="rest_in_place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
-  Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
+  Name: <span class="rest-in-place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
+  Hobbies: <span class="rest-in-place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
 </div>
 
 <div id="<%= dom_id @user2 %>" data-url="<%= url_for(@user2) %>">
   ID: <%= @user2.id %><br />
-  Name: <span class="rest_in_place" data-attribute="name"><%= @user2.name %></span><br/><br/>
-  Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user2.hobbies %></span>
+  Name: <span class="rest-in-place" data-attribute="name"><%= @user2.name %></span><br/><br/>
+  Hobbies: <span class="rest-in-place" data-formtype="textarea" data-attribute="hobbies"><%= @user2.hobbies %></span>
 </div>    

@@ -3,19 +3,27 @@ Version 2.0
 
 Major overhaul of the entire project.
 
-- No more standalone
+- No more standalone  
   Since I don't think anyone is using this in a different way, REST in Place is
   now a pure Rails 3.1 gemplugin using the asset pipeline
-- Specs
+- Specs  
   To facilitate development of new features and refactoring, the app now has a
   Jasmine spec suite in the testapp. It can be run by visiting
   http://localhost:3000/jasmine
-- CoffeeScript
+- CoffeeScript  
   Because if you're not using CoffeScript there's something wrong with you. It
   makes JavaScript bearable again.
-- Proper CSRF token support
+- Proper CSRF token support  
   This was hacky in the past but for a while Rails includes a standard mechanism
   for providing CSRF information to JavaScript running on the page.
-- Automatic detection of `include_root_in_json` setting in Rails
+- Automatic detection of `include_root_in_json` setting in Rails  
   Through the magic of erb and the asset pipeline, REST in Place can detect
   how you've configured ActiveRecord.
+- **BC breaking interface changes**  
+  Two major things have changed that might trip you up:
+  - The default css class for REST in Place is now `rest-in-place` and not 
+    `rest_in_place`.
+  - Elements with that default class are initialized automatically on
+    `document.ready`.
+  - The jQuery function to intialize elements with a REST in Place Editor was
+    renamed from `rest_in_place()` to `restInPlace()`.

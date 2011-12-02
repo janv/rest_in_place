@@ -96,13 +96,13 @@ Usage Instructions
 ==================
 
 To make a piece of Text inplace-editable, wrap it into an element (a span
-usually) with class "rest_in_place". The editor needs 3 pieces of information
+usually) with class "rest-in-place". The editor needs 3 pieces of information
 to work: a URL, an object name and the attribute name. These are provided as
 follows:
 
 -   put attributes into the element, like this:
     
-        <span class="rest_in_place" data-url="/users/1" data-object="user" data-attribute="name">
+        <span class="rest-in-place" data-url="/users/1" data-object="user" data-attribute="name">
           <%= @user.name %>
         </span>
   
@@ -110,8 +110,8 @@ follows:
     for them. That means you can write something like:
     
         <div data-object="user" data-url="/users/1">
-          Name:  <span class="rest_in_place" data-attribute="name" ><%= @user.name %></span><br/>
-          eMail: <span class="rest_in_place" data-attribute="email"><%= @user.email %></span>
+          Name:  <span class="rest-in-place" data-attribute="name" ><%= @user.name %></span><br/>
+          eMail: <span class="rest-in-place" data-attribute="email"><%= @user.email %></span>
         </div>
     
 -   You can completely omit the url to use the current document's url.
@@ -123,8 +123,8 @@ follows:
     ActiveRecord for you. So, your HTML page may look like this:
     
         <div id="<%= dom_id @user # == "user_1" %>">
-          Name:  <span class="rest_in_place" data-attribute="name" ><%= @user.name %></span><br/>
-          eMail: <span class="rest_in_place" data-attribute="email"><%= @user.email %></span>
+          Name:  <span class="rest-in-place" data-attribute="name" ><%= @user.name %></span><br/>
+          eMail: <span class="rest-in-place" data-attribute="email"><%= @user.email %></span>
         </div>
     
     REST in Place recognizes dom_ids of this form and derives the object parameter
@@ -141,6 +141,12 @@ follows:
     
     To write your own form types, just extend the `RestInPlace.forms` object
     and select your new form type throught the `data-formtype` attribute.
+
+Elements with the class `rest-in-place` are picked up automatically upon
+`document.ready`. For other elements, grab them via jQuery and call
+restInPlace() on the jQuery object.
+
+    $('.my-custom-class').restInPlace()
 
 Example
 =======
@@ -180,8 +186,8 @@ Your app/views/users/show.html.erb:
 
     <div id="<%= dom_id @user %>">
       ID: <%= @user.id %><br />
-      Name: <span class="rest_in_place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
-      Hobbies: <span class="rest_in_place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
+      Name: <span class="rest-in-place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
+      Hobbies: <span class="rest-in-place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
     </div>
 
 You can run this example by running to the testapp included in this
