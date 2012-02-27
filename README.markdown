@@ -25,7 +25,7 @@ updated record in the response to the PUT request. See the testapp for an
 example.
 
 URL:         <http://github.com/janv/rest_in_place/>  
-REPOSITORY:  git://github.com/janv/rest_in_place.git
+REPOSITORY:  git://github.com/janv/rest_in_place.git  
 BLOG:        <http://jan.varwig.org/projects/rest-in-place>
 
 If you like REST in Place, you can flattr me: <a href="http://flattr.com/thing/1984/REST-in-Place" target="_blank">
@@ -84,7 +84,7 @@ JavaScript files in `app/assets`, for example in your application.js:
 
 In both cases, make sure you load REST in Place __after__ jQuery.
 
-Rails Request forgery Protection
+Rails Request Forgery Protection
 ================================
 
 For REST in Place to work with Rails request forgery protection, you need to
@@ -131,7 +131,7 @@ follows:
     from them, so that (with the current documents url used) you really only need
     to provide the attributes name in most cases.
    
-    **Note that a manually defined (in the element or in one of the parents)  
+    **Note that a manually defined (in the element or in one of the parents)
     object always overrides dom_id recognition.**
 
 -   REST in Place supports multiple form types. The default type is a input
@@ -234,4 +234,4 @@ tests pass.
 
 
 ---
-Copyright (c) 2011 [Jan Varwig], released under the MIT license
+Copyright (c) 2012 [Jan Varwig], released under the MIT license
