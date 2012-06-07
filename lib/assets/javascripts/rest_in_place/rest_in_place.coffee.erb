@@ -171,6 +171,8 @@ RestInPlaceEditor.forms =
       @$element.find("form").submit =>
         @update()
         false
+      @$element.find("input").keyup (e) =>
+        @abort() if e.keyCode == ESC_KEY
       @$element.find("input").blur => @abort()
     
     getValue : ->
@@ -180,6 +182,8 @@ RestInPlaceEditor.forms =
     activateForm : ->
       @$element.html("""<form action="javascript:void(0)" style="display:inline;"><textarea class="rest-in-place-#{@attributeName}">#{$.trim(@oldValue)}</textarea></form>""")
       @$element.find('textarea')[0].select()
+      @$element.find("textarea").keyup (e) =>
+        @abort() if e.keyCode == ESC_KEY
       @$element.find("textarea").blur => @update()
 
     getValue : ->
@@ -188,6 +192,9 @@ RestInPlaceEditor.forms =
 # ------------------
 #
 # ### Support functionality
+
+# Symbolic representation of the ESC Keycode
+ESC_KEY = 27
 
 # Assign jQuery shortcut
 $ = jQuery
