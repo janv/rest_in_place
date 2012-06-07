@@ -1,3 +1,8 @@
+Version 2.0.2
+-------------
+
+- In the two default editors, pressing ESC aborts the editing process.
+
 Version 2.0.1
 -------------
 
