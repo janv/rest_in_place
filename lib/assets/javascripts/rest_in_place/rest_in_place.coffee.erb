@@ -22,6 +22,7 @@ class RestInPlaceEditor
   
   # Restore the element to its default state
   abort : ->
+    @$element.trigger('restinplace.abort')
     @$element
       .html(@oldValue)
       .removeClass('rip-active')
@@ -32,12 +33,14 @@ class RestInPlaceEditor
   # parseable answer, a second request is initiated to retrieve the updated
   # value via GET
   update : ->
+    @$element.trigger('restinplace.update')
     updateRequest = @ajax
       type : "post"
       data : @requestData()
       
     updateRequest.done (data) =>
-      if data 
+      @$element.trigger('restinplace.success')
+      if data
         @loadSuccessCallback(data)
       else
         @loadViaGET()
@@ -46,6 +49,7 @@ class RestInPlaceEditor
       if (jqXHR.status == 200 && textStatus == "parsererror")
         @loadViaGET()
       else
+        @$element.trigger('restinplace.failure')
         @abort()
         
     @$element.html("saving...")
