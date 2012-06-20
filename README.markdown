@@ -148,6 +148,33 @@ restInPlace() on the jQuery object.
 
     $('.my-custom-class').restInPlace()
 
+Events
+------
+
+A REST in Place instance triggers four different events on the element that
+it's associated with:
+
+- `activate.rest-in-place` when starting the editing of the element.  
+  Triggering the event is the first thing that happens, before any processing
+  and form building takes place. That means uou can use this event to modify
+  the content of the element (for example to remove number/date formatting).
+- `success.rest-in-place` with the data retrieved from the server as an
+  extra parameter after a successful save on the server.  
+  This event is triggered at the very latest moment, after the element has
+  been restored with the data from the server. This means you can use the
+  event handler to further modify the data and overwrite the displayed value
+  (useful for number/date formatting for example).
+- `failure.rest-in-place` after an error occured
+- `update.rest-in-place` immediately before sending the update to the server
+- `abort.rest-in-place` when the user aborts the editing process.
+
+Bind to these events through the jQuery event mechanisms:
+
+    $('#my-editable-element').bind('success.rest-in-place', function(event, data){
+      console.log("Yay it worked! The new value is", data.whatever);
+    });
+    
+
 Example
 =======
 

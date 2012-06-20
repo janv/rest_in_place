@@ -15,6 +15,7 @@ class RestInPlaceEditor
   
   # Toggle the element associated with this editor from normal to a form field  
   activate : ->
+    @$element.trigger('activate.rest-in-place')
     @oldValue = @$element.html()
     @$element.addClass('rip-active')
     @$element.unbind('click', @clickHandler)
@@ -22,7 +23,7 @@ class RestInPlaceEditor
   
   # Restore the element to its default state
   abort : ->
-    @$element.trigger('restinplace.abort')
+    @$element.trigger('abort.rest-in-place')
     @$element
       .html(@oldValue)
       .removeClass('rip-active')
@@ -33,13 +34,12 @@ class RestInPlaceEditor
   # parseable answer, a second request is initiated to retrieve the updated
   # value via GET
   update : ->
-    @$element.trigger('restinplace.update')
+    @$element.trigger('update.rest-in-place')
     updateRequest = @ajax
       type : "post"
       data : @requestData()
       
     updateRequest.done (data) =>
-      @$element.trigger('restinplace.success')
       if data
         @loadSuccessCallback(data)
       else
@@ -49,7 +49,7 @@ class RestInPlaceEditor
       if (jqXHR.status == 200 && textStatus == "parsererror")
         @loadViaGET()
       else
-        @$element.trigger('restinplace.failure')
+        @$element.trigger('failure.rest-in-place')
         @abort()
         
     @$element.html("saving...")
@@ -152,6 +152,8 @@ class RestInPlaceEditor
     @$element.html(@extractAttributeFromData(data))
     @$element.click(@clickHandler)
     @$element.removeClass('rip-active')
+    @$element.trigger('success.rest-in-place', data)
+    
   
   # Creates a clickhandler for the current instance of RestInPlaceEditor, that
   # has its this pointer permanently bound to the editor instance.

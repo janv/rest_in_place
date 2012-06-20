@@ -9,3 +9,12 @@
   Name: <span class="rest-in-place" data-attribute="name"><%= @user2.name %></span><br/><br/>
   Hobbies: <span class="rest-in-place" data-formtype="textarea" data-attribute="hobbies"><%= @user2.hobbies %></span>
 </div>    
+
+<script type="text/javascript" charset="utf-8">
+  $(function(){
+    // with fully qualified event name, 
+    $('div span').bind('success.rest-in-place', function(event, data){
+      console.log("Yay it worked! The new value is", data);
+    });    
+  })
+</script>
