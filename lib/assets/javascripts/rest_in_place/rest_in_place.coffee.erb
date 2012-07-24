@@ -57,6 +57,7 @@ class RestInPlaceEditor
   loadViaGET : ->
     showRequest = @ajax()
     showRequest.done (data) => @loadSuccessCallback(data)
+    showRequest.fail => @$element.trigger('failure.rest-in-place')
   
   # ## Implementation Methods
   #

@@ -174,3 +174,48 @@ describe "jQuery Interface", ->
       .restInPlace()
       .data('restInPlaceEditor')
     expect(typeof rip.activate).toEqual("function")
+
+describe "Events", ->
+  handlers = {}
+ 
+  beforeEach ->
+    rip = makeRip '<p><span data-object="person" data-attribute="age">Blubb</span></p>'
+    handlers =
+      activate : ->
+      success  : ->
+      failure  : ->
+      update   : ->
+      abort    : ->
+  
+  it "should dispatch activate.rest-in-place", ->
+    spyOn(handlers, 'activate')
+    rip.$element.bind("activate.rest-in-place", handlers.activate)
+    rip.activate()
+    expect(handlers.activate).toHaveBeenCalled()
+
+  it "should dispatch success.rest-in-place", ->
+    spyOn(handlers, 'success')
+    rip.$element.bind("success.rest-in-place", handlers.success)
+    rip.loadSuccessCallback({person: {age: 666}})
+    expect(handlers.success).toHaveBeenCalled()
+
+  it "should dispatch failure.rest-in-place", ->
+    spyOn(handlers, 'failure')
+    rip.$element.bind("failure.rest-in-place", handlers.failure)
+    deferred = rip.loadViaGET()
+    waitsFor((-> deferred.state() != "pending"), "deferred timeout", 500)
+    runs -> expect(handlers.failure).toHaveBeenCalled()
+    # Test POST failure
+
+  it "should dispatch update.rest-in-place", ->
+    spyOn(handlers, 'update')
+    rip.$element.bind("update.rest-in-place", handlers.update)
+    rip.update()
+    expect(handlers.update).toHaveBeenCalled()
+
+  it "should dispatch abort.rest-in-place", ->
+    spyOn(handlers, 'abort')
+    rip.$element.bind("abort.rest-in-place", handlers.abort)
+    rip.activate()
+    rip.abort()
+    expect(handlers.abort).toHaveBeenCalled()
