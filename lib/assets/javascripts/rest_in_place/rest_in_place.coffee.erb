@@ -15,11 +15,12 @@ class RestInPlaceEditor
   
   # Toggle the element associated with this editor from normal to a form field  
   activate : ->
-    @$element.trigger('activate.rest-in-place')
     @oldValue = @$element.html()
+    @$element.trigger('activate.rest-in-place')
     @$element.addClass('rip-active')
     @$element.unbind('click', @clickHandler)
     @activateForm()
+    @$element.trigger('ready.rest-in-place')
   
   # Restore the element to its default state
   abort : ->
@@ -173,7 +174,7 @@ class RestInPlaceEditor
 RestInPlaceEditor.forms = 
   "input" :
     activateForm : ->
-      @$element.html("""<form action="javascript:void(0)" style="display:inline;"><input type="text" value="#{$.trim(@oldValue)}" class="rest-in-place-#{@attributeName}"></form>""")
+      @$element.html("""<form action="javascript:void(0)" style="display:inline;"><input type="text" value="#{$.trim(@$element.html())}" class="rest-in-place-#{@attributeName}"></form>""")
       @$element.find('input')[0].select()
       @$element.find("form").submit =>
         @update()
@@ -187,7 +188,7 @@ RestInPlaceEditor.forms =
   
   "textarea" :
     activateForm : ->
-      @$element.html("""<form action="javascript:void(0)" style="display:inline;"><textarea class="rest-in-place-#{@attributeName}">#{$.trim(@oldValue)}</textarea></form>""")
+      @$element.html("""<form action="javascript:void(0)" style="display:inline;"><textarea class="rest-in-place-#{@attributeName}">#{$.trim(@$element.html())}</textarea></form>""")
       @$element.find('textarea')[0].select()
       @$element.find("textarea").keyup (e) =>
         @abort() if e.keyCode == ESC_KEY

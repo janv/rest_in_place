@@ -186,6 +186,7 @@ describe "Events", ->
       failure  : ->
       update   : ->
       abort    : ->
+      ready    : ->
   
   it "should dispatch activate.rest-in-place", ->
     spyOn(handlers, 'activate')
@@ -219,3 +220,9 @@ describe "Events", ->
     rip.activate()
     rip.abort()
     expect(handlers.abort).toHaveBeenCalled()
+
+  it "should dispatch ready.rest-in-place", ->
+    spyOn(handlers, 'ready')
+    rip.$element.bind("ready.rest-in-place", handlers.ready)
+    rip.activate()
+    expect(handlers.ready).toHaveBeenCalled()

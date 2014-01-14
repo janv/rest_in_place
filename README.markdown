@@ -158,6 +158,8 @@ it's associated with:
   Triggering the event is the first thing that happens, before any processing
   and form building takes place. That means uou can use this event to modify
   the content of the element (for example to remove number/date formatting).
+- `ready.rest-in-place` when the form has been built. This event can be used 
+  e.g. to change the size of the field or textarea.
 - `success.rest-in-place` with the data retrieved from the server as an
   extra parameter after a successful save on the server.  
   This event is triggered at the very latest moment, after the element has
