@@ -15,7 +15,9 @@
 
 <script type="text/javascript">
   jasmine.getEnv().addReporter(new jasmine.TrivialReporter());
-  jasmine.getEnv().execute();
+  $(function(){
+    jasmine.getEnv().execute();
+  })
 </script>
 
 </body>
