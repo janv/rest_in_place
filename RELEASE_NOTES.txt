@@ -1,3 +1,12 @@
+Version 2.2.0
+-------------
+
+- `ready` event and timing change for `activate` event
+- Escape HTML to prevent XSS
+- Avoid bug when values contain double quotes
+- Fix jasmine specs
+- Fix filename for better compatibility with rails asset pipeline
+
 Version 2.1.1
 -------------
 

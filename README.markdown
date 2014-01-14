@@ -262,5 +262,5 @@ If you send pull requests be sure to also add tests and make sure the existing
 tests pass.
 
 
----
-Copyright (c) 2012 [Jan Varwig], released under the MIT license
+Copyright (c) 2013 [Jan Varwig], released under the MIT license
+
