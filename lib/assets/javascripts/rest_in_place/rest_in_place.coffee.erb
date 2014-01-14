@@ -151,7 +151,7 @@ class RestInPlaceEditor
   
   # Handles the successful response from the server
   loadSuccessCallback : (data) ->
-    @$element.html(@extractAttributeFromData(data))
+    @$element.text(@extractAttributeFromData(data))
     @$element.click(@clickHandler)
     @$element.removeClass('rip-active')
     @$element.trigger('success.rest-in-place', data)

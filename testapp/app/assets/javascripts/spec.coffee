@@ -136,6 +136,15 @@ describe "Server communication", ->
         jqXHR.status = 500
         jqXHR.reject(jqXHR)
         expect(rip.abort).toHaveBeenCalled()
+
+    describe "when receiving HTML", ->
+      response = age : "<strong></strong>"
+      beforeEach ->
+        rip.update(response)
+
+      it "should escape the HTML", ->
+        jqXHR.resolve(response)
+        expect(rip.$element.html()).toEqual("&lt;strong&gt;&lt;/strong&gt;")
       
   
 describe "User Interaction", ->
