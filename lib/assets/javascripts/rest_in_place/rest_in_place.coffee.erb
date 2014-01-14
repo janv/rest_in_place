@@ -174,7 +174,11 @@ class RestInPlaceEditor
 RestInPlaceEditor.forms = 
   "input" :
     activateForm : ->
-      @$element.html("""<form action="javascript:void(0)" style="display:inline;"><input type="text" value="#{$.trim(@$element.html())}" class="rest-in-place-#{@attributeName}"></form>""")
+      value = $.trim(@$element.html())
+      @$element.html("""<form action="javascript:void(0)" style="display:inline;">
+        <input type="text" class="rest-in-place-#{@attributeName}">
+        </form>""")
+      @$element.find('input').val(value)
       @$element.find('input')[0].select()
       @$element.find("form").submit =>
         @update()
@@ -188,7 +192,11 @@ RestInPlaceEditor.forms =
   
   "textarea" :
     activateForm : ->
-      @$element.html("""<form action="javascript:void(0)" style="display:inline;"><textarea class="rest-in-place-#{@attributeName}">#{$.trim(@$element.html())}</textarea></form>""")
+      value = $.trim(@$element.html())
+      @$element.html("""<form action="javascript:void(0)" style="display:inline;">
+        <textarea class="rest-in-place-#{@attributeName}"></textarea>
+        </form>""")
+      @$element.find('textarea').val(value)
       @$element.find('textarea')[0].select()
       @$element.find("textarea").keyup (e) =>
         @abort() if e.keyCode == ESC_KEY
