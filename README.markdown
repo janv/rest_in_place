@@ -102,7 +102,7 @@ follows:
 
 -   put attributes into the element, like this:
     
-        <span class="rest-in-place" data-url="/users/1" data-object="user" data-attribute="name">
+        <span class="rest-in-place" data-url="/users/1" data-object="user" data-attribute="name" data-placeholder="Enter a name">
           <%= @user.name %>
         </span>
   
