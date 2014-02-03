@@ -106,6 +106,7 @@ class RestInPlaceEditor
       @formType      = @formType      || $(parent).attr("data-formtype")
       @objectName    = @objectName    || $(parent).attr("data-object")
       @attributeName = @attributeName || $(parent).attr("data-attribute")
+      @placeholder   = @placeholder   || $(parent).attr("data-placeholder")
 
     @$element.parents().each (index, parent) =>
       @objectName = @objectName || res[1] if res = parent.id.match(/^(\w+)_(\d+)$/i)
