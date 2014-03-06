@@ -10,12 +10,14 @@ class RestInPlaceEditor
     @createClickHandler()
     
     @$element.click(@clickHandler)
+
+    @updateDisplayValue(@$element.text())
   
   # ## Public interface functions ############################################
   
   # Toggle the element associated with this editor from normal to a form field  
   activate : ->
-    @oldValue = @$element.html()
+    @oldValue = @elementHTML()
     @$element.trigger('activate.rest-in-place')
     @$element.addClass('rip-active')
     @$element.unbind('click', @clickHandler)
@@ -25,9 +27,8 @@ class RestInPlaceEditor
   # Restore the element to its default state
   abort : ->
     @$element.trigger('abort.rest-in-place')
-    @$element
-      .html(@oldValue)
-      .removeClass('rip-active')
+    @updateDisplayValue(@oldValue)
+    @$element.removeClass('rip-active')
       .click(@clickHandler)
   
   # Take the changes a user has made and send them to the server.
@@ -105,15 +106,17 @@ class RestInPlaceEditor
       @formType      = @formType      || $(parent).attr("data-formtype")
       @objectName    = @objectName    || $(parent).attr("data-object")
       @attributeName = @attributeName || $(parent).attr("data-attribute")
+      @placeholder   = @placeholder   || $(parent).attr("data-placeholder")
 
     @$element.parents().each (index, parent) =>
       @objectName = @objectName || res[1] if res = parent.id.match(/^(\w+)_(\d+)$/i)
 
-    @url           = @$element.attr("data-url")       || @url      || document.location.pathname
-    @formType      = @$element.attr("data-formtype")  || @formType || "input"
-    @objectName    = @$element.attr("data-object")    || @objectName
-    @attributeName = @$element.attr("data-attribute") || @attributeName
-    
+    @url           = @$element.attr("data-url")         || @url         || document.location.pathname
+    @formType      = @$element.attr("data-formtype")    || @formType    || "input"
+    @objectName    = @$element.attr("data-object")      || @objectName
+    @attributeName = @$element.attr("data-attribute")   || @attributeName
+    @placeholder   = @$element.attr("data-placeholder") || @placeholder || ''
+
   # Overwrites formtype specific method implementations during initialization
   bindForm : ->
     @activateForm = RestInPlaceEditor.forms[@formType].activateForm
@@ -146,12 +149,26 @@ class RestInPlaceEditor
       data[@objectName][@attributeName]
     else
       data[@attributeName]      
-  
+
+  updateDisplayValue : (value) ->
+    if $.trim(value).length < 1
+      @$element.html(@placeholderHTML())
+    else
+      @$element.text(value)
+
+  placeholderHTML : ->
+    """<span class="rest-in-placeholder">#{@placeholder}</span>"""
+
+  elementHTML: ->
+    value = @$element.html()
+    value = '' if value  == @placeholderHTML()
+    value
+
   # ## Handlers ##############################################################
   
   # Handles the successful response from the server
   loadSuccessCallback : (data) ->
-    @$element.text(@extractAttributeFromData(data))
+    @updateDisplayValue(@extractAttributeFromData(data))
     @$element.click(@clickHandler)
     @$element.removeClass('rip-active')
     @$element.trigger('success.rest-in-place', data)
@@ -174,9 +191,9 @@ class RestInPlaceEditor
 RestInPlaceEditor.forms = 
   "input" :
     activateForm : ->
-      value = $.trim(@$element.html())
+      value = $.trim(@elementHTML())
       @$element.html("""<form action="javascript:void(0)" style="display:inline;">
-        <input type="text" class="rest-in-place-#{@attributeName}">
+        <input type="text" class="rest-in-place-#{@attributeName}" placeholder="#{@placeholder}">
         </form>""")
       @$element.find('input').val(value)
       @$element.find('input')[0].select()
@@ -192,9 +209,9 @@ RestInPlaceEditor.forms =
   
   "textarea" :
     activateForm : ->
-      value = $.trim(@$element.html())
+      value = $.trim(@elementHTML())
       @$element.html("""<form action="javascript:void(0)" style="display:inline;">
-        <textarea class="rest-in-place-#{@attributeName}"></textarea>
+        <textarea class="rest-in-place-#{@attributeName}" placeholder="#{@placeholder}"></textarea>
         </form>""")
       @$element.find('textarea').val(value)
       @$element.find('textarea')[0].select()

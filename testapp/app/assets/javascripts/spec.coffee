@@ -11,13 +11,14 @@ describe "Setup", ->
   describe "looking up attributes in parents", ->
     beforeEach ->
       rip = makeRip """
-        <p data-url="localhorst" data-formtype="textarea" data-object="person" data-attribute="name">
+        <p data-url="localhorst" data-formtype="textarea" data-object="person" data-attribute="name" data-placeholder="Enter name">
           <span>Blubb</span>
         </p>"""
-    it "should find the data-url"      , -> expect(rip.url).toEqual('localhorst')
-    it "should find the data-formtype" , -> expect(rip.formType).toEqual('textarea')
-    it "should find the data-object"   , -> expect(rip.objectName).toEqual('person')
-    it "should find the data-attribute", -> expect(rip.attributeName).toEqual('name')
+    it "should find the data-url"        , -> expect(rip.url).toEqual('localhorst')
+    it "should find the data-formtype"   , -> expect(rip.formType).toEqual('textarea')
+    it "should find the data-object"     , -> expect(rip.objectName).toEqual('person')
+    it "should find the data-attribute"  , -> expect(rip.attributeName).toEqual('name')
+    it "should find the data-placeholder", -> expect(rip.placeholder).toEqual('Enter name')
     
     it "should prefer inner settings over outer", ->
       rip = makeRip """<div data-object="outer"><p data-url="inner"><span>Blubb</span></p></div>"""
@@ -40,14 +41,15 @@ describe "Setup", ->
       expect(rip.formType).toEqual('input')
     it "should take precedence over anything set through parents", ->
       rip = makeRip """
-        <p data-url="localhorst" data-formtype="textarea1" data-object="person" data-attribute="name">
-          <span data-url="localhorst2" data-formtype="textarea" data-object="person2" data-attribute="name2">Blubb</span>
+        <p data-url="localhorst" data-formtype="textarea1" data-object="person" data-attribute="name" data-placeholder="placeholder">
+          <span data-url="localhorst2" data-formtype="textarea" data-object="person2" data-attribute="name2" data-placeholder="placeholder2">Blubb</span>
         </p>"""
       expect(rip.url).toEqual('localhorst2')
       expect(rip.formType).toEqual('textarea')
       expect(rip.objectName).toEqual('person2')
       expect(rip.attributeName).toEqual('name2')
-    
+      expect(rip.placeholder).toEqual('placeholder2')
+
 describe "Server communication", ->
   beforeEach ->
     rip = makeRip '<p><span data-object="person" data-attribute="age">Blubb</span></p>'
@@ -235,3 +237,19 @@ describe "Events", ->
     rip.$element.bind("ready.rest-in-place", handlers.ready)
     rip.activate()
     expect(handlers.ready).toHaveBeenCalled()
+
+describe "Placeholder", ->
+  beforeEach ->
+    rip = makeRip '<p><span data-placeholder="Enter age"></span></p>'
+
+  it "sets a placeholder when the value is empty", ->
+    expect(rip.$element.html()).toEqual('<span class="rest-in-placeholder">Enter age</span>')
+
+  it "dosen't set a placeholder when a value is present", ->
+    rip = makeRip '<p><span data-object="person" data-attribute="age" data-placeholder="Enter age">123</span></p>'
+    expect(rip.$element.html()).toNotEqual('<span class="rest-in-placeholder">Enter age</span>')
+
+  it "switches to placeholder attribute when activated", ->
+    rip.activate()
+    expect(rip.$element.find('input')[0].hasAttribute('placeholder'));
+
