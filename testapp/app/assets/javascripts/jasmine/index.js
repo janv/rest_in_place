@@ -1,2 +1,2 @@
-//= require ./jasmine.js
-//= require ./jasmine-html.js
+//= require ./jasmine
+//= require ./jasmine-html
