@@ -188,7 +188,8 @@ describe "jQuery Interface", ->
 
 describe "Events", ->
   handlers = {}
- 
+  jqXHR = null
+
   beforeEach ->
     rip = makeRip '<p><span data-object="person" data-attribute="age">Blubb</span></p>'
     handlers =
@@ -198,7 +199,13 @@ describe "Events", ->
       update   : ->
       abort    : ->
       ready    : ->
-  
+    jqXHR = new $.Deferred()
+    spyOn(rip, 'ajax').andCallFake (options = {}) ->
+      options.url      = @url
+      options.dataType = "json"
+      jqXHR
+
+
   it "should dispatch activate.rest-in-place", ->
     spyOn(handlers, 'activate')
     rip.$element.bind("activate.rest-in-place", handlers.activate)
@@ -211,13 +218,23 @@ describe "Events", ->
     rip.loadSuccessCallback({person: {age: 666}})
     expect(handlers.success).toHaveBeenCalled()
 
-  it "should dispatch failure.rest-in-place", ->
-    spyOn(handlers, 'failure')
-    rip.$element.bind("failure.rest-in-place", handlers.failure)
-    deferred = rip.loadViaGET()
-    waitsFor((-> deferred.state() != "pending"), "deferred timeout", 500)
-    runs -> expect(handlers.failure).toHaveBeenCalled()
-    # Test POST failure
+  describe "on failure", ->
+    responseJSON = {"some": "json"}
+    beforeEach ->
+      spyOn(handlers, 'failure')
+      rip.$element.bind("failure.rest-in-place", handlers.failure)
+      jqXHR.status = 404
+      jqXHR.responseJSON = responseJSON
+      jqXHR.reject(jqXHR, "Response text")
+
+    it "loadViaGET should dispatch failure.rest-in-place", ->
+      rip.loadViaGET()
+      expect(handlers.failure).toHaveBeenCalledWith(jasmine.any(jQuery.Event),responseJSON)
+      # Test POST failure
+
+    it "update should dispatch failure.rest-in-place", ->
+      rip.update()
+      expect(handlers.failure).toHaveBeenCalledWith(jasmine.any(jQuery.Event), responseJSON)
 
   it "should dispatch update.rest-in-place", ->
     spyOn(handlers, 'update')

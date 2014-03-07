@@ -51,7 +51,7 @@ class RestInPlaceEditor
       if (jqXHR.status == 200 && textStatus == "parsererror")
         @loadViaGET()
       else
-        @$element.trigger('failure.rest-in-place')
+        @$element.trigger('failure.rest-in-place', jqXHR.responseJSON)
         @abort()
         
     @$element.html("saving...")
@@ -59,8 +59,8 @@ class RestInPlaceEditor
   loadViaGET : ->
     showRequest = @ajax()
     showRequest.done (data) => @loadSuccessCallback(data)
-    showRequest.fail => @$element.trigger('failure.rest-in-place')
-  
+    showRequest.fail => @$element.trigger('failure.rest-in-place', showRequest.responseJSON)
+
   # ## Implementation Methods
   #
   # These are not implemented in RestInPlaceEditor. Instead, different form
