@@ -19,11 +19,11 @@ describe "Setup", ->
     it "should find the data-object"     , -> expect(rip.objectName).toEqual('person')
     it "should find the data-attribute"  , -> expect(rip.attributeName).toEqual('name')
     it "should find the data-placeholder", -> expect(rip.placeholder).toEqual('Enter name')
-    
+
     it "should prefer inner settings over outer", ->
       rip = makeRip """<div data-object="outer"><p data-url="inner"><span>Blubb</span></p></div>"""
       expect(rip.url).toEqual('inner')
-    
+
   describe "guessing objectName from Rails", ->
     describe 'without parent-provided info', ->
       beforeEach -> rip = makeRip """<p id="person_123"><span>Blubb</span></p>"""
@@ -31,7 +31,7 @@ describe "Setup", ->
     describe 'with parent-provided info', ->
       beforeEach -> rip = makeRip """<div data-object="customer"><p id="person_123"><span>Blubb</span></p></div>"""
       it "should not overwrite the explicit value with the guess", -> expect(rip.objectName).not.toEqual('person')
-    
+
   describe "own data attributes", ->
     it "url should default to the current path", ->
       rip = makeRip '<p><span>Blubb</span></p>'
@@ -66,15 +66,15 @@ describe "Server communication", ->
     it "should directly access the attribute if include_root_in_json is not set", ->
       rip.include_root_in_json = false
       expect(rip.extractAttributeFromData(age:12)).toEqual(12)
-  
+
   describe "when sending the update", ->
     csrf_metatags = null
-    
+
     beforeEach ->
       spyOn(rip, 'getValue').andReturn(111)
       csrf_metatags = $('meta[name=csrf-param], meta[name=csrf-token]')
-      csrf_metatags.remove()     
-    
+      csrf_metatags.remove()
+
     afterEach ->
       csrf_metatags.appendTo($('head'))
 
@@ -90,7 +90,7 @@ describe "Server communication", ->
 
     it "should not include rails csrf stuff if its not in the HTML", ->
       expect(rip.requestData()['authenticity_token']).toBeUndefined()
-  
+
   describe "after updating", ->
     jqXHR = null
     beforeEach ->
@@ -99,7 +99,7 @@ describe "Server communication", ->
         options.url      = @url
         options.dataType = "json"
         jqXHR
-        
+
     describe "when receiving an empty body", ->
       beforeEach ->
         spyOn(rip, 'loadViaGET')
@@ -108,7 +108,7 @@ describe "Server communication", ->
       it "should load via get", ->
         jqXHR.resolve()
         expect(rip.loadViaGET).toHaveBeenCalled()
-      
+
     describe "when receiving a body with data", ->
       response = age : 12
       beforeEach ->
@@ -118,7 +118,7 @@ describe "Server communication", ->
       it "should load the success callback", ->
         jqXHR.resolve(response)
         expect(rip.loadSuccessCallback).toHaveBeenCalledWith(response)
-      
+
     describe "when receiving unparseable data", ->
       beforeEach ->
         spyOn(rip, 'loadViaGET')
@@ -128,7 +128,7 @@ describe "Server communication", ->
         jqXHR.status = 200
         jqXHR.reject(jqXHR, 'parsererror')
         expect(rip.loadViaGET).toHaveBeenCalled()
-      
+
     describe "when receiving any other error", ->
       beforeEach ->
         spyOn(rip, 'abort')
@@ -147,24 +147,24 @@ describe "Server communication", ->
       it "should escape the HTML", ->
         jqXHR.resolve(response)
         expect(rip.$element.html()).toEqual("&lt;strong&gt;&lt;/strong&gt;")
-      
-  
+
+
 describe "User Interaction", ->
   beforeEach ->
     rip = makeRip '<p><span data-object="person" data-attribute="age">Blubb</span></p>'
-  
+
   describe "when clicked", ->
     it "should be turned rip-active", ->
       rip.$element.click()
       expect(rip.$element.hasClass('rip-active')).toBe(true)
-    
+
     it "should call activate", ->
       spyOn(rip, 'activate')
       rip.$element.click()
       expect(rip.activate).toHaveBeenCalled()
-    
+
     xit "should remove the click handler"
-      
+
   describe "when aborting", ->
     beforeEach ->
       rip.activate()
@@ -178,7 +178,7 @@ describe "jQuery Interface", ->
   it "should automatically convert elements with class rest-in-place", ->
     rip = $('#autoload-sample').data('restInPlaceEditor')
     expect(typeof rip.activate).toEqual("function")
-        
+
   it "should convert jQuery objects with the restInPlace() function ", ->
     rip = $('<p><span data-object="person" data-attribute="age">Blubb</span></p>')
       .find('span')
