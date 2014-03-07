@@ -166,7 +166,17 @@ it's associated with:
   been restored with the data from the server. This means you can use the
   event handler to further modify the data and overwrite the displayed value
   (useful for number/date formatting for example).
-- `failure.rest-in-place` after an error occured
+- `failure.rest-in-place` after an error occured. The second argument will be
+  jQuery's responseJSON, so it is possible to handle (for instance) server-side
+  validation errors.
+
+        $('#my-editable-element').bind('failure.rest-in-place', function(event, json) {
+            $el = $(@)
+            attr = $el.data("attribute")
+            error_message = json[attr].join(", ")
+            $el.after("<span class='error'>#{error_message}</span>")
+        });
+
 - `update.rest-in-place` immediately before sending the update to the server
 - `abort.rest-in-place` when the user aborts the editing process.
 
