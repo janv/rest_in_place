@@ -251,5 +251,5 @@ $.fn.restInPlace = ->
 
 # Run automatically
 ready = -> $('.rest-in-place').restInPlace()
-$(document).on 'page:load', ready if Turbolinks and Turbolinks.supported
+$(document).on 'page:load', ready if typeof (Turbolinks) isnt "undefined" and Turbolinks.supported
 $(document).on 'ready', ready
