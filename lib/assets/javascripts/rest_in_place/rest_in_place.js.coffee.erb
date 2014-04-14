@@ -160,7 +160,7 @@ class RestInPlaceEditor
     """<span class="rest-in-placeholder">#{@placeholder}</span>"""
 
   elementHTML: ->
-    value = @$element.html()
+    value = @$element.text()
     value = '' if value  == @placeholderHTML()
     value
 
