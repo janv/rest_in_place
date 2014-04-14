@@ -250,4 +250,6 @@ $.fn.restInPlace = ->
 
 
 # Run automatically
-$ -> $('.rest-in-place').restInPlace()
+ready = -> $('.rest-in-place').restInPlace()
+$(document).on 'page:load', ready if Turbolinks and Turbolinks.supported
+$(document).on 'ready', ready
