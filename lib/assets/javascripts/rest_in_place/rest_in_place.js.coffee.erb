@@ -250,4 +250,4 @@ $.fn.restInPlace = ->
 
 
 # Run automatically
-$ -> $('.rest-in-place').restInPlace()
+$(document).on 'ready page:load', -> $('.rest-in-place').restInPlace()
