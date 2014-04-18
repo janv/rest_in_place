@@ -5,7 +5,7 @@ require "rest_in_place/version"
 Gem::Specification.new do |s|
   s.name        = "rest_in_place"
   s.version     = RestInPlace::VERSION
-  s.date        = '2014-03-07'
+  s.date        = '2014-04-18'
   s.authors     = ["Jan Varwig"]
   s.email       = ["jan@varwig.org"]
   s.homepage    = "http://jan.varwig.org"
