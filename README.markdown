@@ -124,12 +124,12 @@ follows:
     </div>
     ```
 
--   You can completely omit the url to use the current document's url.
+-   You can completely omit the URL to use the current document's URL.
     With proper RESTful controllers this should always work, the explicit
-    url-attribute is for cases when you want to edit a resource that is
+    URL-attribute is for cases when you want to edit a resource that is
     displayed as part of a non-RESTful webpage.
 
--   Rails provides the dom_id helper that constructs a dom id out of an
+-   Rails provides the DOM helper that constructs a DOM id out of an
     ActiveRecord for you. So, your HTML page may look like this:
 
     ```erb
@@ -140,7 +140,7 @@ follows:
     ```
 
     REST in Place recognizes dom_ids of this form and derives the object parameter
-    from them, so that (with the current documents url used) you really only need
+    from them, so that (with the current documents URL used) you really only need
     to provide the attributes name in most cases.
 
     **Note that a manually defined (in the element or in one of the parents)
@@ -180,7 +180,7 @@ it's associated with:
   been restored with the data from the server. This means you can use the
   event handler to further modify the data and overwrite the displayed value
   (useful for number/date formatting for example).
-- `failure.rest-in-place` after an error occured. The second argument will be
+- `failure.rest-in-place` after an error occurred. The second argument will be
   jQuery's responseJSON, so it is possible to handle (for instance) server-side
   validation errors.
 
@@ -254,13 +254,13 @@ Your app/views/users/show.html.erb:
 ```
 
 You can run this example by running to the testapp included in this
-plugin with script/server (sqlite3 required) and visiting
+plugin with script/server (SQLite3 required) and visiting
 localhost:3000/users/
 
 Hint:
 you might need to set up the database first.
 Copy and edit `testapp/config/database.yml.sample` accordingly.
-If you don't want to use the included sqlite3 database, run `rake db:create`
+If you don't want to use the included SQLite3 database, run `rake db:create`
 and `rake db:schema:load`.
 
 Troubleshooting
@@ -286,7 +286,7 @@ Participation
 
 I'd love to get comments, bug reports (or better, pull-requests) about REST in
 Place. For this, you can either fork the project to send a pull request, or
-submit a bug in the tracker at github:
+submit a bug in the tracker at GitHub:
 <http://github.com/janv/rest_in_place/issues>
 
 For general comments and questions, please use the comment function on my blog:
