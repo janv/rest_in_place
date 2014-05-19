@@ -156,7 +156,7 @@ it's associated with:
 
 - `activate.rest-in-place` when starting the editing of the element.
   Triggering the event is the first thing that happens, before any processing
-  and form building takes place. That means uou can use this event to modify
+  and form building takes place. That means you can use this event to modify
   the content of the element (for example to remove number/date formatting).
 - `ready.rest-in-place` when the form has been built. This event can be used
   e.g. to change the size of the field or textarea.
