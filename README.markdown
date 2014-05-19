@@ -72,7 +72,9 @@ Installation
 
 Just add
 
-    gem 'rest_in_place'
+```ruby
+gem 'rest_in_place'
+```
 
 to your Gemfile.
 
@@ -80,7 +82,9 @@ Then load the JavaScript by adding <%= javascript_include_tag "rest_in_place" %>
 into your layout. Alternatively you can require 'rest_in_place' in your
 JavaScript files in `app/assets`, for example in your application.js:
 
-    //= require 'rest_in_place'
+```javascript
+//= require 'rest_in_place'
+```
 
 In both cases, make sure you load REST in Place __after__ jQuery.
 
@@ -90,7 +94,9 @@ Rails Request Forgery Protection
 For REST in Place to work with Rails request forgery protection, you need to
 have the Rails CSRF meta tags in your HTML head:
 
-    <%= csrf_meta_tags %>
+```erb
+<%= csrf_meta_tags %>
+```
 
 Usage Instructions
 ==================
@@ -102,17 +108,21 @@ follows:
 
 -   put attributes into the element, like this:
 
-        <span class="rest-in-place" data-url="/users/1" data-object="user" data-attribute="name" data-placeholder="Enter a name">
-          <%= @user.name %>
-        </span>
+    ```erb
+    <span class="rest-in-place" data-url="/users/1" data-object="user" data-attribute="name" data-placeholder="Enter a name">
+      <%= @user.name %>
+    </span>
+    ```
 
 -   if any of these attributes is missing, DOM parents of the element are searched
     for them. That means you can write something like:
 
-        <div data-object="user" data-url="/users/1">
-          Name:  <span class="rest-in-place" data-attribute="name" ><%= @user.name %></span><br/>
-          eMail: <span class="rest-in-place" data-attribute="email"><%= @user.email %></span>
-        </div>
+    ```erb
+    <div data-object="user" data-url="/users/1">
+      Name:  <span class="rest-in-place" data-attribute="name" ><%= @user.name %></span><br/>
+      eMail: <span class="rest-in-place" data-attribute="email"><%= @user.email %></span>
+    </div>
+    ```
 
 -   You can completely omit the url to use the current document's url.
     With proper RESTful controllers this should always work, the explicit
@@ -122,10 +132,12 @@ follows:
 -   Rails provides the dom_id helper that constructs a dom id out of an
     ActiveRecord for you. So, your HTML page may look like this:
 
-        <div id="<%= dom_id @user # == "user_1" %>">
-          Name:  <span class="rest-in-place" data-attribute="name" ><%= @user.name %></span><br/>
-          eMail: <span class="rest-in-place" data-attribute="email"><%= @user.email %></span>
-        </div>
+    ```erb
+    <div id="<%= dom_id @user # == "user_1" %>">
+      Name:  <span class="rest-in-place" data-attribute="name" ><%= @user.name %></span><br/>
+      eMail: <span class="rest-in-place" data-attribute="email"><%= @user.email %></span>
+    </div>
+    ```
 
     REST in Place recognizes dom_ids of this form and derives the object parameter
     from them, so that (with the current documents url used) you really only need
@@ -146,7 +158,9 @@ Elements with the class `rest-in-place` are picked up automatically upon
 `document.ready`. For other elements, grab them via jQuery and call
 restInPlace() on the jQuery object.
 
-    $('.my-custom-class').restInPlace()
+```javascript
+$('.my-custom-class').restInPlace()
+```
 
 Events
 ------
@@ -170,21 +184,25 @@ it's associated with:
   jQuery's responseJSON, so it is possible to handle (for instance) server-side
   validation errors.
 
-        $('#my-editable-element').bind('failure.rest-in-place', function(event, json) {
-            $el = $(this);
-            attr = $el.data("attribute");
-            error_message = json[attr].join(", ");
-            $el.after("<span class='error'>#{error_message}</span>");
-        });
+  ```javascript
+  $('#my-editable-element').bind('failure.rest-in-place', function(event, json) {
+      $el = $(this);
+      attr = $el.data("attribute");
+      error_message = json[attr].join(", ");
+      $el.after("<span class='error'>#{error_message}</span>");
+  });
+  ```
 
 - `update.rest-in-place` immediately before sending the update to the server
 - `abort.rest-in-place` when the user aborts the editing process.
 
 Bind to these events through the jQuery event mechanisms:
 
-    $('#my-editable-element').bind('success.rest-in-place', function(event, data){
-      console.log("Yay it worked! The new value is", data.whatever);
-    });
+```javascript
+$('#my-editable-element').bind('success.rest-in-place', function(event, data){
+  console.log("Yay it worked! The new value is", data.whatever);
+});
+```
 
 
 Example
@@ -192,42 +210,48 @@ Example
 
 Your routes.rb:
 
-    resources :users
+```erb
+resources :users
+```
 
 Your app/controllers/users_controller.rb:
 
-    class UsersController < ApplicationController
-      def show
-        @user = User.find params[:id]
-        respond_to do |format|
-          format.html
-          format.json {render :json => @user}
-        end
-      end
+```ruby
+class UsersController < ApplicationController
+  def show
+    @user = User.find params[:id]
+    respond_to do |format|
+      format.html
+      format.json {render :json => @user}
+    end
+  end
 
-      def update
-        @user = User.find params[:id]
-        if @user.update_attributes!(params[:user])
-          respond_to do |format|
-            format.html { redirect_to( @person )}
-            format.json { render :json => @user }
-          end
-        else
-          respond_to do |format|
-            format.html { render :action  => :edit } # edit.html.erb
-            format.json { render :nothing =>  true }
-          end
-        end
+  def update
+    @user = User.find params[:id]
+    if @user.update_attributes!(params[:user])
+      respond_to do |format|
+        format.html { redirect_to( @person )}
+        format.json { render :json => @user }
+      end
+    else
+      respond_to do |format|
+        format.html { render :action  => :edit } # edit.html.erb
+        format.json { render :nothing =>  true }
       end
     end
+  end
+end
+```
 
 Your app/views/users/show.html.erb:
 
-    <div id="<%= dom_id @user %>">
-      ID: <%= @user.id %><br />
-      Name: <span class="rest-in-place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
-      Hobbies: <span class="rest-in-place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
-    </div>
+```erb
+<div id="<%= dom_id @user %>">
+  ID: <%= @user.id %><br />
+  Name: <span class="rest-in-place" data-formtype="input" data-attribute="name"><%= @user.name %></span><br/><br/>
+  Hobbies: <span class="rest-in-place" data-formtype="textarea" data-attribute="hobbies"><%= @user.hobbies %></span>
+</div>
+```
 
 You can run this example by running to the testapp included in this
 plugin with script/server (sqlite3 required) and visiting
