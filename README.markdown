@@ -139,7 +139,7 @@ follows:
     </div>
     ```
 
-    REST in Place recognizes dom_ids of this form and derives the object parameter
+    REST in Place recognizes `dom_id`s of this form and derives the object parameter
     from them, so that (with the current documents URL used) you really only need
     to provide the attributes name in most cases.
 
@@ -156,7 +156,7 @@ follows:
 
 Elements with the class `rest-in-place` are picked up automatically upon
 `document.ready`. For other elements, grab them via jQuery and call
-restInPlace() on the jQuery object.
+`.restInPlace()` on the jQuery object.
 
 ```javascript
 $('.my-custom-class').restInPlace()
