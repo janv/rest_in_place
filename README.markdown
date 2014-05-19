@@ -171,10 +171,10 @@ it's associated with:
   validation errors.
 
         $('#my-editable-element').bind('failure.rest-in-place', function(event, json) {
-            $el = $(@)
-            attr = $el.data("attribute")
-            error_message = json[attr].join(", ")
-            $el.after("<span class='error'>#{error_message}</span>")
+            $el = $(this);
+            attr = $el.data("attribute");
+            error_message = json[attr].join(", ");
+            $el.after("<span class='error'>#{error_message}</span>");
         });
 
 - `update.rest-in-place` immediately before sending the update to the server
