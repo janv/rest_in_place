@@ -37,13 +37,16 @@ class RestInPlaceEditor
   # value via GET
   update : ->
     @$element.trigger('update.rest-in-place')
+    @newValue = @getValue()
     updateRequest = @ajax
       type : "post"
       data : @requestData()
 
-    updateRequest.done (data) =>
+    updateRequest.done (data, textStatus, jqXHR) =>
       if data
         @loadSuccessCallback(data)
+      else if (jqXHR.status == 204)
+        @loadSuccessCallback(@newValue, true)
       else
         @loadViaGET()
 
@@ -167,8 +170,11 @@ class RestInPlaceEditor
   # ## Handlers ##############################################################
 
   # Handles the successful response from the server
-  loadSuccessCallback : (data) ->
-    @updateDisplayValue(@extractAttributeFromData(data))
+  loadSuccessCallback : (data, nocontent) ->
+    if nocontent
+      @updateDisplayValue(data)
+    else
+      @updateDisplayValue(@extractAttributeFromData(data))
     @$element.click(@clickHandler)
     @$element.removeClass('rip-active')
     @$element.trigger('success.rest-in-place', data)
