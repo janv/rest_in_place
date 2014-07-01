@@ -274,7 +274,7 @@ Testing
 =======
 
 The repository contains a `testapp` directory with a rails app that can be
-used to test REST in Place. Just head to `http://localhost:3000` to see it in
+used to test REST in Place. Run `bundle exec rake db:seed` and head to `http://localhost:3000` to see it in
 action.
 
 There's also an automated Jasmine spec suite running at
