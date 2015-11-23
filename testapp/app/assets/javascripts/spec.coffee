@@ -100,13 +100,27 @@ describe "Server communication", ->
         options.dataType = "json"
         jqXHR
 
+    describe "when receiving HTTP 204 No Content", ->
+      newValue = 12
+      beforeEach ->
+        spyOn(rip, 'getValue').andCallFake () ->
+          newValue
+        spyOn(rip, 'loadSuccessCallback')
+        rip.update()
+
+      it "should abort", ->
+        jqXHR.status = 204
+        jqXHR.resolve('', '', jqXHR)
+        expect(rip.loadSuccessCallback).toHaveBeenCalledWith(newValue, true)
+
     describe "when receiving an empty body", ->
       beforeEach ->
         spyOn(rip, 'loadViaGET')
         rip.update()
 
       it "should load via get", ->
-        jqXHR.resolve()
+        jqXHR.status = 200
+        jqXHR.resolve('', '', jqXHR)
         expect(rip.loadViaGET).toHaveBeenCalled()
 
     describe "when receiving a body with data", ->
