@@ -129,7 +129,9 @@ class RestInPlaceEditor
   requestData : ->
     data = @getEncodedTokenAuthenticationParams()
     data["_method"] = 'put'
-    data["#{@objectName}[#{@attributeName}]"] = @getValue()
+    value = @getValue()
+    if value != @placeholder
+      data["#{@objectName}[#{@attributeName}]"] = @getValue()
     data
 
   # Extract CSRF token from metatags
