@@ -52,7 +52,7 @@ describe "Setup", ->
 
 describe "Server communication", ->
   beforeEach ->
-    rip = makeRip '<p><span data-object="person" data-attribute="age">Blubb</span></p>'
+    rip = makeRip '<p><span data-object="person" data-attribute="age" data-placeholder="placeholder">Blubb</span></p>'
 
   describe "when processing the response from the server", ->
 
@@ -69,27 +69,39 @@ describe "Server communication", ->
 
   describe "when sending the update", ->
     csrf_metatags = null
+    describe "when not changing fields", ->
+      beforeEach ->
+        spyOn(rip, 'getValue').andReturn('placeholder')
+        csrf_metatags = $('meta[name=csrf-param], meta[name=csrf-token]')
+        csrf_metatags.remove()
+      afterEach ->
+        csrf_metatags.appendTo($('head'))
 
-    beforeEach ->
-      spyOn(rip, 'getValue').andReturn(111)
-      csrf_metatags = $('meta[name=csrf-param], meta[name=csrf-token]')
-      csrf_metatags.remove()
+      it "should not send the data", ->
+        expect(rip.requestData()['person[age]']).toEqual(null)
 
-    afterEach ->
-      csrf_metatags.appendTo($('head'))
+    describe "when changing fields", ->
+      beforeEach ->
+        spyOn(rip, 'getValue').andReturn(111)
+        csrf_metatags = $('meta[name=csrf-param], meta[name=csrf-token]')
+        csrf_metatags.remove()
 
-    it "should include the data", ->
-      expect(rip.requestData()['person[age]']).toEqual(111)
+      afterEach ->
+        csrf_metatags.appendTo($('head'))
 
-    it "should include rails csrf stuff if its in the HTML", ->
-      $('head').append """
-        <meta content="test_authenticity_token" name="csrf-param" />
-        <meta content="123456" name="csrf-token" />
-      """
-      expect(rip.requestData()['test_authenticity_token']).toEqual('123456')
+      it "should include the data", ->
+        expect(rip.requestData()['person[age]']).toEqual(111)
 
-    it "should not include rails csrf stuff if its not in the HTML", ->
-      expect(rip.requestData()['authenticity_token']).toBeUndefined()
+      it "should include rails csrf stuff if its in the HTML", ->
+        $('head').append """
+          <meta content="test_authenticity_token" name="csrf-param" />
+          <meta content="123456" name="csrf-token" />
+        """
+        expect(rip.requestData()['test_authenticity_token']).toEqual('123456')
+
+      it "should not include rails csrf stuff if its not in the HTML", ->
+        expect(rip.requestData()['authenticity_token']).toBeUndefined()
+
 
   describe "after updating", ->
     jqXHR = null
